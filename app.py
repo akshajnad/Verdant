@@ -8,7 +8,7 @@ from weather_api_helper import get_weather_forecast
 app = Flask(__name__)
 
 # If you have an OpenWeatherMap API key, put it here (or use environment variables):
-OPENWEATHER_API_KEY = "YOUR_OPENWEATHER_API_KEY"
+OPENWEATHER_API_KEY = "8ff13b9bcdc7e5db9eab3b58f1839512"
 
 # -------------------------------------------
 # SIMPLIFIED "AI" / PLANNING LOGIC
