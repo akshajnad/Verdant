@@ -18,6 +18,10 @@ def get_weather_forecast(api_key, lat, lon):
     response = requests.get(url, params=params)
     data = response.json()
 
+    # If "daily" is missing, return an empty list or handle gracefully
+    if "daily" not in data:
+        return []
+
     forecasts = []
     for day in data["daily"]:
         date = datetime.datetime.fromtimestamp(day["dt"]).strftime('%Y-%m-%d')
