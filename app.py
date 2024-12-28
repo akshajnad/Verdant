@@ -428,4 +428,7 @@ def generate_schedule_for_request(request_id):
 # MAIN
 # -----------------------------
 if __name__ == "__main__":
+    with app.app_context():
+        seed_admin()  # Create admin user if not exists
     app.run(debug=True)
+
