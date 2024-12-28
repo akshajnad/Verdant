@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Schedule</title>
+</head>
+<body>
+<h1>Generate Schedule for Request #{{ produce_request.id }}</h1>
+<form method="POST">
+    <label>Garden Size (sq ft):</label><br>
+    <input type="number" step="0.1" name="garden_size" required><br><br>
+
+    <label>Existing Crops (e.g. 'Tomatoes:50:4;Lettuce:25:2'):</label><br>
+    <input type="text" name="existing_crops"><br><br>
+
+    <label>Latitude (optional):</label><br>
+    <input type="number" step="0.0001" name="latitude"><br><br>
+
+    <label>Longitude (optional):</label><br>
+    <input type="number" step="0.0001" name="longitude"><br><br>
+
+    <label>OpenWeatherMap API key (optional):</label><br>
+    <input type="text" name="api_key"><br><br>
+
+    <input type="submit" value="Generate">
+</form>
+</body>
+</html>
