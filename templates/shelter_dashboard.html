@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shelter Dashboard</title>
+</head>
+<body>
+<h1>Welcome, {{ user.username }}!</h1>
+
+<h2>Your Requests:</h2>
+{% for req in requests %}
+  <p>Request #{{ req.id }} - 
+     People: {{ req.num_people }}, 
+     Volume Goal: {{ req.volume_goal }},
+     Calorie Goal: {{ req.calorie_goal }},
+     Additional Needs: {{ req.additional_needs }}
+  </p>
+{% endfor %}
+
+<p><a href="{{ url_for('new_request') }}">Submit New Request</a></p>
+<p><a href="{{ url_for('logout') }}">Logout</a></p>
+</body>
+</html>
