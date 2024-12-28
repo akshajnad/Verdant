@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+</head>
+<body>
+<h1>Admin Dashboard</h1>
+
+{% if selected_shelter %}
+  <h2>Requests from Shelter: {{ selected_shelter.username }}</h2>
+  {% for r in requests_ %}
+    <p>
+      Request #{{ r.id }}: 
+      People: {{ r.num_people }}, 
+      Volume: {{ r.volume_goal }},
+      Calorie: {{ r.calorie_goal }},
+      <a href="{{ url_for('generate_schedule_for_request', request_id=r.id) }}">
+        Generate Schedule
+      </a>
+    </p>
+  {% endfor %}
+  <a href="{{ url_for('admin_dashboard') }}">Go Back</a>
+{% else %}
+  <h2>All Shelters</h2>
+  {% for s in shelters %}
+    <p>
+      Shelter: {{ s.username }}
+      (<a href="{{ url_for('view_shelter_requests', shelter_id=s.id) }}">View Requests</a>)
+    </p>
+  {% endfor %}
+{% endif %}
+
+<p><a href="{{ url_for('logout') }}">Logout</a></p>
+</body>
+</html>
