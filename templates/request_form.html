@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Produce Request</title>
+</head>
+<body>
+<h1>New Produce Request</h1>
+<form method="POST">
+    <label>Number of People:</label><br>
+    <input type="number" name="num_people" required><br><br>
+
+    <label>Volume Goal (lbs/week):</label><br>
+    <input type="number" step="0.1" name="volume_goal"><br><br>
+
+    <label>Calorie Goal (daily per person):</label><br>
+    <input type="number" step="0.1" name="calorie_goal"><br><br>
+
+    <label>Additional Needs (e.g. 'leafy greens'):</label><br>
+    <input type="text" name="additional_needs"><br><br>
+
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>
