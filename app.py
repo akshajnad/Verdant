@@ -68,7 +68,6 @@ def seed_admin():
         db.session.add(admin)
         db.session.commit()
 
-seed_admin()
 
 # -----------------------------
 # SIMPLE AUTH HELPERS
@@ -429,6 +428,9 @@ def generate_schedule_for_request(request_id):
 # -----------------------------
 if __name__ == "__main__":
     with app.app_context():
-        seed_admin()  # Create admin user if not exists
+        db.create_all()     # Ensure tables are created
+        seed_admin()        # Seed the admin user
+
     app.run(debug=True)
+
 
