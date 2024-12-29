@@ -1,0 +1,50 @@
+<!-- templates/layout.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}GardenApp{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <!-- NAV BAR -->
+  <nav class="navbar">
+    <div class="nav-left">
+      <!-- Logo placeholder: place the file in static/ with name "logo.png" -->
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="GardenApp Logo" class="logo" />
+      <h1 class="site-title">GardenApp</h1>
+    </div>
+    <div class="nav-right">
+      <!-- Example nav links -->
+      <a href="{{ url_for('shelter_dashboard') }}">Home</a>
+      <a href="{{ url_for('new_request') }}">New Request</a>
+      <a href="{{ url_for('about_creators') }}">About the Creators</a>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header class="hero-section">
+    <!-- Put a large hero background image in styles.css or inline here -->
+    <div class="hero-content">
+      <h2>Welcome to GardenApp</h2>
+      <p>Empowering Shelters with Fresh Produce</p>
+      <!-- A call-to-action button that slides or animates on hover -->
+      <a href="{{ url_for('new_request') }}" class="cta-button">Create a New Request</a>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <div class="container fade-in-animation">
+      {% block content %}
+      {% endblock %}
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>© 2023 GardenApp. All rights reserved.</p>
+  </footer>
+</body>
+</html>
