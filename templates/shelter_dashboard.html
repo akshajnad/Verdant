@@ -2,21 +2,24 @@
 <html>
 <head>
     <title>Shelter Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 <h1>Welcome, {{ user.username }}!</h1>
 
 <h2>Your Requests:</h2>
 {% for req in requests %}
-  <p>Request #{{ req.id }} - 
-     People: {{ req.num_people }}, 
-     Volume Goal: {{ req.volume_goal }},
-     Calorie Goal: {{ req.calorie_goal }},
-     Additional Needs: {{ req.additional_needs }}
-  </p>
+  <div class="request-card">
+    <p><strong>Request #{{ req.id }}</strong></p>
+    <p>People: {{ req.num_people }}  
+       | Volume Goal: {{ req.volume_goal }}
+       | Calorie Goal: {{ req.calorie_goal }}</p>
+    <p>Additional Needs: {{ req.additional_needs }}</p>
+    <p><em>Notes for Farmers:</em> {{ req.shelter_notes }}</p>
+  </div>
 {% endfor %}
 
-<p><a href="{{ url_for('new_request') }}">Submit New Request</a></p>
+<p><a href="{{ url_for('new_request') }}" class="btn">Submit New Request</a></p>
 <p><a href="{{ url_for('logout') }}">Logout</a></p>
 </body>
 </html>
