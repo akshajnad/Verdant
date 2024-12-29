@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-<h1>Login</h1>
-<form method="POST" action="">
-    <label for="username">Username:</label>
-    <input type="text" name="username" id="username"><br><br>
-
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password"><br><br>
-
-    <input type="submit" value="Login">
+{% extends "layout.html" %}
+{% block title %}Login | GardenApp{% endblock %}
+{% block content %}
+<h2>Login</h2>
+<form method="POST">
+    <!-- your username/password fields here -->
+    <label>Username:</label>
+    <input type="text" name="username">
+    <label>Password:</label>
+    <input type="password" name="password">
+    <button type="submit" class="fancy-button">Log In</button>
 </form>
-<p>Or <a href="{{ url_for('register') }}">Register</a> if you're a new shelter.</p>
-</body>
-</html>
+{% endblock %}
