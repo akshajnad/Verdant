@@ -1,29 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>New Produce Request</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-<h1>New Produce Request</h1>
+<!-- templates/request_form.html -->
+{% extends "layout.html" %}
+{% block title %}New Produce Request | GardenApp{% endblock %}
+
+{% block content %}
+<h2>Create a New Produce Request</h2>
 <form method="POST">
-    <label>Number of People:</label><br>
-    <input type="number" name="num_people" required><br><br>
+  <label>Number of People:</label>
+  <input type="number" name="num_people" required>
 
-    <label>Volume Goal (lbs/week):</label><br>
-    <input type="number" step="0.1" name="volume_goal"><br><br>
+  <label>Volume Goal (lbs/week): <span id="volumeValue">10</span></label>
+  <input type="range" name="volume_goal" min="0" max="100" step="1" value="10" 
+         oninput="document.getElementById('volumeValue').textContent = this.value" />
 
-    <label>Calorie Goal (daily per person):</label><br>
-    <input type="number" step="0.1" name="calorie_goal"><br><br>
+  <label>Calorie Goal (daily per person): <span id="calorieValue">2000</span></label>
+  <input type="range" name="calorie_goal" min="0" max="5000" step="10" value="2000" 
+         oninput="document.getElementById('calorieValue').textContent = this.value" />
 
-    <label>Additional Needs (e.g. 'leafy greens'):</label><br>
-    <input type="text" name="additional_needs"><br><br>
+  <label>Additional Needs (e.g. 'leafy greens'):</label>
+  <input type="text" name="additional_needs">
 
-    <!-- NEW: Shelter notes -->
-    <label>Notes for Farmers (optional):</label><br>
-    <textarea name="shelter_notes" rows="5"></textarea><br><br>
+  <label>Notes for Farmers:</label>
+  <textarea name="shelter_notes" rows="4"></textarea>
 
-    <input type="submit" value="Submit" class="btn">
+  <button type="submit" class="fancy-button">Submit Request</button>
 </form>
-</body>
-</html>
+{% endblock %}
