@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+{% block title %}Presets | GardenApp{% endblock %}
+
+{% block content %}
+<h2>Presets: Manage Gardens & Currently Growing Crops</h2>
+
+<!-- Add Garden Form -->
+<div class="preset-section">
+  <h3>Add a New Garden</h3>
+  <form method="POST">
+    <input type="hidden" name="action" value="add_garden">
+    <label for="garden_name">Garden Name:</label>
+    <input type="text" name="garden_name" required>
+
+    <label for="garden_area">Area (sq ft):</label>
+    <input type="number" step="0.1" name="garden_area" required>
+
+    <button type="submit" class="btn">Add Garden</button>
+  </form>
+</div>
+
+<!-- List Existing Gardens with Delete Option -->
+<div class="preset-section">
+  <h3>Existing Gardens</h3>
+  {% if gardens %}
+    <ul>
+      {% for g in gardens %}
+      <li>
+        <strong>{{ g.garden_name }}</strong> ({{ g.area_sq_ft }} sq ft)
+        <form method="POST" style="display:inline;">
+          <input type="hidden" name="action" value="delete_garden">
+          <input type="hidden" name="garden_id_to_delete" value="{{ g.id }}">
+          <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this garden?')">
+            Delete
+          </button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No gardens yet.</p>
+  {% endif %}
+</div>
+
+<!-- Add Crop to a Garden -->
+<div class="preset-section">
+  <h3>Add a Crop to a Garden</h3>
+  <form method="POST">
+    <input type="hidden" name="action" value="add_garden_crop">
+    
+    <label for="selected_garden">Select Garden:</label>
+    <select name="selected_garden" required>
+      <option value="">-- Choose a garden --</option>
+      {% for g in gardens %}
+      <option value="{{ g.id }}">{{ g.garden_name }}</option>
+      {% endfor %}
+    </select>
+
+    <label for="crop_name">Crop Name:</label>
+    <input type="text" name="crop_name" required>
+
+    <label for="weeks_growing">Weeks Growing:</label>
+    <input type="number" name="weeks_growing" value="0">
+
+    <label for="crop_space">Space Used (sq ft):</label>
+    <input type="number" step="0.1" name="crop_space" value="0">
+
+    <button type="submit" class="btn">Add Crop</button>
+  </form>
+</div>
+
+<!-- List Existing Crops with Delete Option -->
+<div class="preset-section">
+  <h3>Currently Growing Crops</h3>
+  {% if crops %}
+    <ul>
+      {% for c in crops %}
+      <li>
+        <strong>{{ c.crop_name }}</strong> on <em>{{ c.garden.garden_name }}</em>,
+        occupying {{ c.space_used }} sq ft, grown for {{ c.weeks_growing }} weeks
+        <form method="POST" style="display:inline;">
+          <input type="hidden" name="action" value="delete_garden_crop">
+          <input type="hidden" name="crop_id_to_delete" value="{{ c.id }}">
+          <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this crop?')">
+            Delete
+          </button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No crops yet.</p>
+  {% endif %}
+</div>
+
+{% endblock %}
