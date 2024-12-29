@@ -1,0 +1,30 @@
+<!-- templates/about_creators.html -->
+{% extends "layout.html" %}
+{% block title %}About the Creators | GardenApp{% endblock %}
+
+{% block content %}
+<h2>Meet the Creators</h2>
+
+<div class="creator-section">
+  <div class="creator-card">
+    <!-- For Akshaj's photo, put the file in static/ as akshaj.jpg -->
+    <!-- Replace "akshaj.jpg" with the actual filename -->
+    <img src="{{ url_for('static', filename='akshaj.jpg') }}" alt="Akshaj Nadimpalli Photo" class="creator-photo">
+    <h3>Akshaj Nadimpalli</h3>
+    <p><strong>Role:</strong> Founder & Developer</p>
+    <p>
+      Akshaj description
+    </p>
+  </div>
+
+  <div class="creator-card">
+    <!-- For Aadi's photo, put the file in static/ as aadi.jpg -->
+    <img src="{{ url_for('static', filename='aadi.jpg') }}" alt="Aadi Alsi Photo" class="creator-photo">
+    <h3>Aadi Alsi</h3>
+    <p><strong>Role:</strong> Outreach Lead</p>
+    <p>
+      Aadi description
+    </p>
+  </div>
+</div>
+{% endblock %}
