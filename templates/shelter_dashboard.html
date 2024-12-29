@@ -1,25 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Shelter Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-<h1>Welcome, {{ user.username }}!</h1>
+<!-- templates/shelter_dashboard.html -->
+{% extends "layout.html" %}
+{% block title %}Shelter Dashboard | GardenApp{% endblock %}
 
-<h2>Your Requests:</h2>
-{% for req in requests %}
-  <div class="request-card">
-    <p><strong>Request #{{ req.id }}</strong></p>
-    <p>People: {{ req.num_people }}  
-       | Volume Goal: {{ req.volume_goal }}
-       | Calorie Goal: {{ req.calorie_goal }}</p>
-    <p>Additional Needs: {{ req.additional_needs }}</p>
-    <p><em>Notes for Farmers:</em> {{ req.shelter_notes }}</p>
-  </div>
-{% endfor %}
+{% block content %}
+  <section class="project-info">
+    <h2>About GardenApp</h2>
+    <p>
+      Welcome to GardenApp! This platform is designed to help shelters easily request
+      fresh produce for their communities. Our mission is to empower sustainable
+      gardening and provide fresh food for everyone in need.
+    </p>
+    <!-- A space for an image about the project or a placeholder graphic -->
+    <img src="{{ url_for('static', filename='project_placeholder.jpg') }}" alt="Project Info Image" class="info-image" />
 
-<p><a href="{{ url_for('new_request') }}" class="btn">Submit New Request</a></p>
-<p><a href="{{ url_for('logout') }}">Logout</a></p>
-</body>
-</html>
+    <h3>Your Existing Requests</h3>
+    {% for req in requests %}
+      <div class="request-card">
+        <p><strong>Request #{{ req.id }}</strong></p>
+        <p>People: {{ req.num_people }}  
+           | Volume Goal: {{ req.volume_goal }}
+           | Calorie Goal: {{ req.calorie_goal }}</p>
+        <p>Additional Needs: {{ req.additional_needs }}</p>
+        <p><em>Notes for Farmers:</em> {{ req.shelter_notes }}</p>
+      </div>
+    {% endfor %}
+  </section>
+{% endblock %}
