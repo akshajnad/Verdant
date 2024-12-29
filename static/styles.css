@@ -1,0 +1,115 @@
+/* styles.css */
+
+/* Basic reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  margin: 1rem 0;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.flash-messages {
+  list-style: none;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background-color: #ffefc0;
+  border: 1px solid #fcd077;
+  border-radius: 4px;
+}
+
+.flash-messages li {
+  margin: 0.5rem 0;
+  color: #a66a00;
+}
+
+label {
+  font-weight: 500;
+  display: inline-block;
+  margin-bottom: 0.3rem;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #3498db;
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  text-decoration: none;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+.btn:hover {
+  background-color: #2980b9;
+}
+
+/* Card style for each request */
+.request-card {
+  background-color: #f2f2f2;
+  border: 1px solid #dcdcdc;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.request-card p {
+  margin-bottom: 0.5rem;
+}
+
+/* Table styles (for schedule_view) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 0.8rem;
+}
+
+table th {
+  background-color: #f3f3f3;
+}
