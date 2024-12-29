@@ -1,38 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-<h1>Admin Dashboard</h1>
+<!-- templates/admin_dashboard.html -->
+{% extends "layout.html" %}
+{% block title %}Admin Dashboard | GardenApp{% endblock %}
+
+{% block content %}
 
 {% if selected_shelter %}
   <h2>Requests from Shelter: {{ selected_shelter.username }}</h2>
+  <p><strong>Phone:</strong> {{ selected_shelter.phone_number }}<br>
+     <strong>Email:</strong> {{ selected_shelter.org_email }}</p>
   {% for r in requests_ %}
     <div class="request-card">
       <p><strong>Request #{{ r.id }}</strong></p>
       <p>People: {{ r.num_people }} | Volume: {{ r.volume_goal }} | Calorie: {{ r.calorie_goal }}</p>
       <p>Additional Needs: {{ r.additional_needs }}</p>
-      <!-- SHOW THE SHELTER NOTES -->
       <p><em>Shelter Notes:</em> {{ r.shelter_notes }}</p>
-      
       <a href="{{ url_for('generate_schedule_for_request', request_id=r.id) }}" class="btn">
         Generate Schedule
       </a>
     </div>
   {% endfor %}
   <a href="{{ url_for('admin_dashboard') }}" class="btn">Go Back</a>
+
 {% else %}
   <h2>All Shelters</h2>
   {% for s in shelters %}
-    <p>
-      Shelter: <strong>{{ s.username }}</strong>
-      (<a href="{{ url_for('view_shelter_requests', shelter_id=s.id) }}">View Requests</a>)
-    </p>
+    <div class="request-card">
+      <p>
+        <strong>Shelter:</strong> {{ s.username }}<br>
+        <strong>Phone:</strong> {{ s.phone_number }}<br>
+        <strong>Email:</strong> {{ s.org_email }}
+      </p>
+      <p>
+        <a href="{{ url_for('view_shelter_requests', shelter_id=s.id) }}" class="btn">View Requests</a>
+      </p>
+    </div>
   {% endfor %}
 {% endif %}
 
-<p><a href="{{ url_for('logout') }}">Logout</a></p>
-</body>
-</html>
+<p><a href="{{ url_for('logout') }}" class="btn">Logout</a></p>
+{% endblock %}
