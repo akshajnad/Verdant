@@ -1,12 +1,23 @@
+<!-- templates/register.html -->
 {% extends "layout.html" %}
 {% block title %}Register | GardenApp{% endblock %}
+
 {% block content %}
-<h2>Create a Shelter Account</h2>
+<h2>Register (Shelter)</h2>
 <form method="POST">
-    <label>Username:</label>
+    <label>Shelter Name (Username):</label>
     <input type="text" name="username" required>
+
     <label>Password:</label>
     <input type="password" name="password" required>
-    <button type="submit" class="fancy-button">Register</button>
+
+    <!-- NEW fields for phone and org email -->
+    <label>Phone Number:</label>
+    <input type="text" name="phone_number" placeholder="e.g. 555-123-4567">
+
+    <label>Organization Email:</label>
+    <input type="email" name="org_email" placeholder="e.g. shelter@example.com">
+
+    <button type="submit" class="btn">Create Account</button>
 </form>
 {% endblock %}
