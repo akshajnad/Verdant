@@ -35,13 +35,16 @@ class User(db.Model):
 class ProduceRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+    # Fields from shelter
     num_people = db.Column(db.Integer, default=0)
     volume_goal = db.Column(db.Float, default=0.0)
     calorie_goal = db.Column(db.Float, default=0.0)
     additional_needs = db.Column(db.String(200), default="")
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # NEW FIELD: Shelter's notes
+    shelter_notes = db.Column(db.Text, default="")
 
-    # For demonstration, store the "status" or other flags if needed
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.String(20), default="new")
 
     # Relationship to the user
