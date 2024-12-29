@@ -29,6 +29,10 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # 'admin' or 'shelter'
+    
+    # NEW: Additional fields for shelters
+    phone_number = db.Column(db.String(30), default="")  # e.g. "555-123-4567"
+    org_email = db.Column(db.String(100), default="")    # e.g. "myorg@example.com"
 
 class ProduceRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -229,6 +233,17 @@ def generate_schedule(existing_crops, recommended_crops, lat=None, lon=None, api
 
 
 # -----------------------------
+# NEW: HOME PAGE ROUTE
+# -----------------------------
+@app.route("/")
+def home():
+    """
+    The home page: Extended about us and explanation of the process.
+    Provides an overview of what GardenApp does and how to proceed.
+    """
+    return render_template("home.html")
+
+# -----------------------------
 # AUTH ROUTES
 # -----------------------------
 @app.route("/login", methods=["GET", "POST"])
@@ -252,6 +267,10 @@ def register():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        
+        # NEW: Additional fields
+        phone_number = request.form.get("phone_number", "")
+        org_email = request.form.get("org_email", "")
 
         existing = User.query.filter_by(username=username).first()
         if existing:
@@ -259,7 +278,13 @@ def register():
             return redirect(url_for("register"))
 
         # default role = shelter
-        shelter_user = User(username=username, password=password, role="shelter")
+        shelter_user = User(
+            username=username,
+            password=password,
+            role="shelter",
+            phone_number=phone_number,   # storing phone
+            org_email=org_email          # storing org email
+        )
         db.session.add(shelter_user)
         db.session.commit()
         flash("Account created! Please log in.")
@@ -390,5 +415,3 @@ if __name__ == "__main__":
         seed_admin()        # Seed the admin user
 
     app.run(debug=True)
-
-
