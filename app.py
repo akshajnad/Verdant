@@ -9,13 +9,11 @@ import pandas as pd
 from weather_api_helper import get_weather_forecast
 
 app = Flask(__name__)
-app.secret_key = "GardenApp"
+app.secret_key = "SUPER_SECRET_KEY_CHANGE_THIS"
 
 # -----------------------------
 # DATABASE CONFIG
 # -----------------------------
-# For a production setting, use a safer DB URI (e.g., PostgreSQL).
-# Here, we just use SQLite for simplicity.
 basedir = os.path.abspath(os.path.dirname(__file__))
 db_path = os.path.join(basedir, "app.db")
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
@@ -51,29 +49,30 @@ class ProduceRequest(db.Model):
     user = db.relationship("User", backref=db.backref("requests", lazy=True))
 
 
-# Pre-create the database tables if they don't exist
-with app.app_context():
-    db.create_all()
-
 # -----------------------------
-# SEED A PRE-REGISTERED ADMIN
+# DATABASE SEEDING (ADMIN)
 # -----------------------------
 def seed_admin():
-    """
-    Create one admin user if not already exists.
-    For a production system, you'd handle this differently (env variables, etc).
-    Password is stored in plain text for demonstration; 
-    in real life, you'd hash it (e.g., using werkzeug.security).
-    """
+    from werkzeug.security import generate_password_hash
+    # If you want to store hashed password, e.g.:
+    # hashed_pass = generate_password_hash("admin123")
+    # For simplicity, we'll keep plain text "admin123" in this demo.  
     existing_admin = User.query.filter_by(username="admin").first()
     if not existing_admin:
-        admin = User(username="admin", password="admin123", role="admin")
+        admin = User(
+            username="admin",
+            password="admin123",  # <--- in production, store hashed
+            role="admin"
+        )
         db.session.add(admin)
         db.session.commit()
 
+# -----------------------------
+# APP CONTEXT & DB CREATION
+# -----------------------------
 
 # -----------------------------
-# SIMPLE AUTH HELPERS
+# AUTH HELPERS
 # -----------------------------
 def is_logged_in():
     return "user_id" in session
@@ -84,10 +83,6 @@ def current_user():
     return User.query.get(session["user_id"])
 
 def requires_login(f):
-    """
-    Decorator to check if user is logged in.
-    If not, redirect to login page.
-    """
     from functools import wraps
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -98,9 +93,6 @@ def requires_login(f):
     return decorated_function
 
 def requires_admin(f):
-    """
-    Decorator to check if current user is an admin.
-    """
     from functools import wraps
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -111,16 +103,11 @@ def requires_admin(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 # -----------------------------
 # RECOMMENDATION / SCHEDULING LOGIC
 # -----------------------------
 def parse_existing_crops(existing_crops_str):
-    """
-    Example input: 'Tomatoes:50:4;Lettuce:25:2'
-    meaning:
-      - Tomatoes occupying 50 sq ft, grown for 4 weeks
-      - Lettuce occupying 25 sq ft, grown for 2 weeks
-    """
     if not existing_crops_str.strip():
         return []
     crops_data = []
@@ -142,13 +129,7 @@ def parse_existing_crops(existing_crops_str):
             })
     return crops_data
 
-
 def recommend_crops(num_people, volume_goal, calorie_goal, additional_needs, free_space):
-    """
-    Rule-based approach that picks crops based on
-    calorie & volume goals, additional needs, and free space.
-    """
-    # Some naive space requirements in sq ft
     crop_space_requirements = {
         "Potatoes": 10,
         "Corn": 12,
@@ -160,7 +141,6 @@ def recommend_crops(num_people, volume_goal, calorie_goal, additional_needs, fre
         "Carrots": 5,
         "Onions": 5,
     }
-
     recommended = []
 
     if calorie_goal > 2000:
@@ -186,11 +166,7 @@ def recommend_crops(num_people, volume_goal, calorie_goal, additional_needs, fre
 
     return final_crops
 
-
 def generate_planting_diagram(existing_crops, recommended_crops, garden_size):
-    """
-    Text-based layout: existing crops first, then new crops.
-    """
     diagram = "Garden Layout Diagram\n\n"
     diagram += f"Total garden size: {garden_size} sq ft\n\n"
     diagram += "Existing Crops:\n"
@@ -209,19 +185,11 @@ def generate_planting_diagram(existing_crops, recommended_crops, garden_size):
 
     return diagram
 
-
 def generate_schedule(existing_crops, recommended_crops, lat=None, lon=None, api_key=None):
-    """
-    Create a schedule from 2 sets of crops:
-      - existing (already grown for X weeks)
-      - new (starting fresh)
-    Optionally factor in weather if lat/lon/api_key are provided.
-    """
     schedule = []
-
-    # existing crops
+    # existing
     for ecrop in existing_crops:
-        total_cycle = 12  # assume a 12-week cycle
+        total_cycle = 12
         weeks_done = ecrop["weeks_grown"]
         weeks_left = max(0, total_cycle - weeks_done)
         schedule.append({
@@ -233,11 +201,11 @@ def generate_schedule(existing_crops, recommended_crops, lat=None, lon=None, api
             "weather_note": ""
         })
 
-    # new crops
+    # new
     base_planting_date = pd.Timestamp("2025-03-01")
     for i, crop in enumerate(recommended_crops):
         plant_date = base_planting_date + pd.Timedelta(weeks=i)
-        harvest_date = plant_date + pd.Timedelta(weeks=10)  # naive
+        harvest_date = plant_date + pd.Timedelta(weeks=10)
         schedule.append({
             "crop": crop + " (new)",
             "planting_date": str(plant_date.date()),
@@ -252,7 +220,6 @@ def generate_schedule(existing_crops, recommended_crops, lat=None, lon=None, api
         forecast = get_weather_forecast(api_key, lat, lon)
         forecast_dict = {day["date"]: day for day in forecast}
         for entry in schedule:
-            # If planting_date is in forecast
             pd_date = entry["planting_date"]
             if pd_date in forecast_dict:
                 desc = forecast_dict[pd_date]["weather"]
@@ -271,7 +238,6 @@ def login():
         password = request.form.get("password")
         user = User.query.filter_by(username=username).first()
         if user and user.password == password:
-            # For production, compare hashed passwords, not plain text
             session["user_id"] = user.id
             if user.role == "admin":
                 return redirect(url_for("admin_dashboard"))
@@ -283,25 +249,20 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """
-    Allows new shelters to sign up.
-    Admin is pre-registered, so we only create 'shelter' roles here.
-    """
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
 
-        # Check if user exists
         existing = User.query.filter_by(username=username).first()
         if existing:
             flash("Username already exists.")
             return redirect(url_for("register"))
 
-        # Create new shelter user
+        # default role = shelter
         shelter_user = User(username=username, password=password, role="shelter")
         db.session.add(shelter_user)
         db.session.commit()
-        flash("Account created. Please log in.")
+        flash("Account created! Please log in.")
         return redirect(url_for("login"))
     return render_template("register.html")
 
@@ -321,16 +282,12 @@ def shelter_dashboard():
         flash("Shelter access only.")
         return redirect(url_for("login"))
 
-    # Show requests for this shelter
     my_requests = ProduceRequest.query.filter_by(user_id=user.id).all()
     return render_template("shelter_dashboard.html", user=user, requests=my_requests)
 
 @app.route("/shelter/request", methods=["GET", "POST"])
 @requires_login
 def new_request():
-    """
-    Shelter can submit a new produce request.
-    """
     user = current_user()
     if user.role != "shelter":
         flash("Shelter access only.")
@@ -341,13 +298,16 @@ def new_request():
         volume_goal = float(request.form.get("volume_goal", 0))
         calorie_goal = float(request.form.get("calorie_goal", 0))
         additional_needs = request.form.get("additional_needs", "")
+        # NEW: Shelter notes
+        shelter_notes = request.form.get("shelter_notes", "")
 
         new_req = ProduceRequest(
             user_id=user.id,
             num_people=num_people,
             volume_goal=volume_goal,
             calorie_goal=calorie_goal,
-            additional_needs=additional_needs
+            additional_needs=additional_needs,
+            shelter_notes=shelter_notes
         )
         db.session.add(new_req)
         db.session.commit()
@@ -362,19 +322,12 @@ def new_request():
 @app.route("/admin/dashboard")
 @requires_admin
 def admin_dashboard():
-    """
-    Lists all shelters, and links to each shelter's requests.
-    """
-    # Grab all shelter users
     shelters = User.query.filter_by(role="shelter").all()
     return render_template("admin_dashboard.html", shelters=shelters)
 
 @app.route("/admin/shelter/<int:shelter_id>")
 @requires_admin
 def view_shelter_requests(shelter_id):
-    """
-    Admin can see the requests from a particular shelter.
-    """
     user = User.query.get_or_404(shelter_id)
     if user.role != "shelter":
         flash("Not a shelter user.")
@@ -386,10 +339,6 @@ def view_shelter_requests(shelter_id):
 @app.route("/admin/generate_schedule/<int:request_id>", methods=["GET", "POST"])
 @requires_admin
 def generate_schedule_for_request(request_id):
-    """
-    Admin can specify garden size, existing crops, lat/lon, etc.
-    Then generate a schedule/diagram for that request.
-    """
     produce_request = ProduceRequest.query.get_or_404(request_id)
 
     if request.method == "POST":
@@ -397,14 +346,12 @@ def generate_schedule_for_request(request_id):
         existing_crops_str = request.form.get("existing_crops", "")
         lat = float(request.form.get("latitude", 0))
         lon = float(request.form.get("longitude", 0))
-        # optionally get an API key from the admin, or store it in config
         api_key = request.form.get("api_key", None)
 
         existing_crops = parse_existing_crops(existing_crops_str)
         used_space = sum(ec["space"] for ec in existing_crops)
         free_space = max(0, garden_size - used_space)
 
-        # run recommendations
         recommended_crops = recommend_crops(
             produce_request.num_people,
             produce_request.volume_goal,
@@ -413,16 +360,15 @@ def generate_schedule_for_request(request_id):
             free_space
         )
 
-        # generate diagram
         diagram = generate_planting_diagram(existing_crops, recommended_crops, garden_size)
-
-        # generate schedule (optionally with weather)
         schedule = generate_schedule(existing_crops, recommended_crops, lat, lon, api_key)
 
-        return render_template("schedule_view.html",
-                               produce_request=produce_request,
-                               diagram=diagram,
-                               schedule=schedule)
+        return render_template(
+            "schedule_view.html",
+            produce_request=produce_request,
+            diagram=diagram,
+            schedule=schedule
+        )
 
     return render_template("schedule_form.html", produce_request=produce_request)
 
