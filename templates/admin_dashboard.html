@@ -5,6 +5,9 @@
 {% block content %}
 
 {% if selected_shelter %}
+<!-- somewhere in admin_dashboard.html or your layout for admin -->
+<p><a href="{{ url_for('admin_presets') }}" class="btn">Presets</a>\n</p>
+
   <h2>Requests from Shelter: {{ selected_shelter.username }}</h2>
   <p><strong>Phone:</strong> {{ selected_shelter.phone_number }}<br>
      <strong>Email:</strong> {{ selected_shelter.org_email }}</p>
