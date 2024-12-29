@@ -1,115 +1,269 @@
 /* styles.css */
 
-/* Basic reset */
+/* Google Fonts (Optional) */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600&display=swap');
+
+/* Reset / Box-Sizing */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Body & Font */
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #f9f9f9;
+  font-family: 'Open Sans', sans-serif;
+  background: #f0f2f5; /* Light gray background */
   color: #333;
   line-height: 1.6;
-  margin: 0;
-  padding: 0;
 }
 
-h1, h2, h3 {
-  margin: 1rem 0;
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #008080; /* Teal color */
+  padding: 1rem 2rem;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-right: 0.8rem;
+}
+
+.site-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.5rem;
   font-weight: 600;
+  color: #fff;
+}
+
+.nav-right a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 1.2rem;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+.nav-right a:hover {
+  color: #ffdb58; /* Light golden color on hover */
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  width: 100%;
+  height: 300px;
+  background: url("{{ url_for('static', filename='hero.jpg') }}") no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-content {
+  text-align: center;
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.4); /* subtle overlay */
+  padding: 2rem;
+  border-radius: 8px;
+}
+
+.hero-content h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.cta-button {
+  display: inline-block;
+  background-color: #ffdb58;
+  color: #333;
+  padding: 0.8rem 1.2rem;
+  border-radius: 4px;
+  font-weight: 600;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.cta-button:hover {
+  background-color: #ffd42a;
+  transform: scale(1.05);
+}
+
+/* Container / Content Layout */
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 2rem auto;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Simple fade-in animation on container */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in-animation {
+  animation: fadeIn 0.7s ease-in-out;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #008080;
+  color: #fff;
+  margin-top: 2rem;
+}
+
+/* Headings */
+h1, h2, h3 {
+  font-family: 'Poppins', sans-serif;
+  margin-bottom: 1rem;
   color: #2c3e50;
 }
 
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 1rem;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.flash-messages {
-  list-style: none;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  background-color: #ffefc0;
-  border: 1px solid #fcd077;
-  border-radius: 4px;
-}
-
-.flash-messages li {
-  margin: 0.5rem 0;
-  color: #a66a00;
-}
-
-label {
-  font-weight: 500;
+/* Buttons */
+.btn, .fancy-button {
   display: inline-block;
-  margin-bottom: 0.3rem;
-}
-
-input[type="text"],
-input[type="number"],
-input[type="password"],
-textarea {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 1rem;
-  font-size: 1rem;
-}
-
-textarea {
-  resize: vertical;
-}
-
-.btn {
-  display: inline-block;
-  background-color: #3498db;
+  background-color: #008080;
   color: #fff;
   padding: 0.6rem 1.2rem;
-  text-decoration: none;
   border-radius: 4px;
   border: none;
   cursor: pointer;
   margin-top: 0.5rem;
   font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  text-decoration: none;
 }
 
-.btn:hover {
-  background-color: #2980b9;
+.btn:hover, .fancy-button:hover {
+  background-color: #006666;
+  transform: scale(1.02);
 }
 
-/* Card style for each request */
+/* Form Fields */
+label {
+  font-weight: 600;
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+  color: #444;
+}
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="range"],
+textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+input[type="range"] {
+  margin-top: 0.5rem;
+}
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  border-color: #008080;
+}
+
+/* request-card */
 .request-card {
-  background-color: #f2f2f2;
-  border: 1px solid #dcdcdc;
-  border-radius: 5px;
+  background-color: #f7f8fa;
+  border-left: 4px solid #008080;
   padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+}
+
+/* Images & Info */
+.info-image {
+  width: 100%;
+  max-width: 500px;
+  margin: 1rem 0;
+  display: block;
+  border-radius: 4px;
+}
+
+/* Creator section */
+.creator-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.creator-card {
+  flex: 1 1 300px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.creator-card:hover {
+  transform: translateY(-5px);
+}
+
+.creator-photo {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
   margin-bottom: 1rem;
 }
 
-.request-card p {
-  margin-bottom: 0.5rem;
-}
-
-/* Table styles (for schedule_view) */
+/* Tables (for schedule_view) */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
 }
 
 table th, table td {
   border: 1px solid #ddd;
   padding: 0.8rem;
+  text-align: left;
 }
 
 table th {
   background-color: #f3f3f3;
+}
+
+/* Flash messages (if any) */
+.flash {
+  background-color: #ffe07d;
+  color: #333;
+  padding: 0.5rem 1rem;
+  margin: 1rem 0;
+  border-left: 4px solid #ffa500;
+  border-radius: 4px;
 }
