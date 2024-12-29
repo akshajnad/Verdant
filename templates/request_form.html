@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>New Produce Request</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
 <h1>New Produce Request</h1>
@@ -18,7 +19,11 @@
     <label>Additional Needs (e.g. 'leafy greens'):</label><br>
     <input type="text" name="additional_needs"><br><br>
 
-    <input type="submit" value="Submit">
+    <!-- NEW: Shelter notes -->
+    <label>Notes for Farmers (optional):</label><br>
+    <textarea name="shelter_notes" rows="5"></textarea><br><br>
+
+    <input type="submit" value="Submit" class="btn">
 </form>
 </body>
 </html>
