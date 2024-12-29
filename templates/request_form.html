@@ -1,4 +1,3 @@
-<!-- templates/request_form.html -->
 {% extends "layout.html" %}
 {% block title %}New Produce Request | GardenApp{% endblock %}
 
@@ -8,13 +7,11 @@
   <label>Number of People:</label>
   <input type="number" name="num_people" required>
 
-  <label>Volume Goal (lbs/week): <span id="volumeValue">10</span></label>
-  <input type="range" name="volume_goal" min="0" max="100" step="1" value="10" 
-         oninput="document.getElementById('volumeValue').textContent = this.value" />
+  <label>Volume Goal (lbs/week):</label>
+  <input type="number" step="0.1" name="volume_goal">
 
-  <label>Calorie Goal (daily per person): <span id="calorieValue">2000</span></label>
-  <input type="range" name="calorie_goal" min="0" max="5000" step="10" value="2000" 
-         oninput="document.getElementById('calorieValue').textContent = this.value" />
+  <label>Calorie Goal (daily per person):</label>
+  <input type="number" step="0.1" name="calorie_goal">
 
   <label>Additional Needs (e.g. 'leafy greens'):</label>
   <input type="text" name="additional_needs">
@@ -22,6 +19,10 @@
   <label>Notes for Farmers:</label>
   <textarea name="shelter_notes" rows="4"></textarea>
 
-  <button type="submit" class="fancy-button">Submit Request</button>
+  <!-- NEW CODE: Urgency field -->
+  <label>Urgency (1 = Low, 5 = Very High):</label>
+  <input type="number" name="urgency" min="1" max="5" value="1">
+
+  <button type="submit" class="btn">Submit Request</button>
 </form>
 {% endblock %}
