@@ -29,10 +29,10 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(20), nullable=False)  # 'admin' or 'shelter'
-    
-    # NEW: Additional fields for shelters
-    phone_number = db.Column(db.String(30), default="")  # e.g. "555-123-4567"
-    org_email = db.Column(db.String(100), default="")    # e.g. "myorg@example.com"
+
+    # These two fields were previously added:
+    phone_number = db.Column(db.String(30), default="")
+    org_email = db.Column(db.String(100), default="")
 
 class ProduceRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -43,7 +43,6 @@ class ProduceRequest(db.Model):
     volume_goal = db.Column(db.Float, default=0.0)
     calorie_goal = db.Column(db.Float, default=0.0)
     additional_needs = db.Column(db.String(200), default="")
-    # NEW FIELD: Shelter's notes
     shelter_notes = db.Column(db.Text, default="")
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -52,20 +51,39 @@ class ProduceRequest(db.Model):
     # Relationship to the user
     user = db.relationship("User", backref=db.backref("requests", lazy=True))
 
+    # NEW CODE: Urgency field
+    urgency = db.Column(db.Integer, default=1)  # Shelter can rank 1=low, 5=high, etc.
+
+
+# NEW CODE: Model for Gardens
+class Garden(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    garden_name = db.Column(db.String(100), nullable=False)
+    area_sq_ft = db.Column(db.Float, default=0.0)
+    # You could add more fields if you like, such as location, soil type, etc.
+
+
+# NEW CODE: Model for Crops currently growing in a Garden
+class GardenCrop(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    garden_id = db.Column(db.Integer, db.ForeignKey("garden.id"), nullable=False)
+    crop_name = db.Column(db.String(100), nullable=False)
+    weeks_growing = db.Column(db.Integer, default=0)
+    space_used = db.Column(db.Float, default=0.0)
+
+    # Relationship to Garden
+    garden = db.relationship("Garden", backref=db.backref("crops", lazy=True))
 
 # -----------------------------
 # DATABASE SEEDING (ADMIN)
 # -----------------------------
 def seed_admin():
     from werkzeug.security import generate_password_hash
-    # If you want to store hashed password, e.g.:
-    # hashed_pass = generate_password_hash("admin123")
-    # For simplicity, we'll keep plain text "admin123" in this demo.  
     existing_admin = User.query.filter_by(username="admin").first()
     if not existing_admin:
         admin = User(
             username="admin",
-            password="admin123",  # <--- in production, store hashed
+            password="admin123",  # plain text here; in production, store hashed
             role="admin"
         )
         db.session.add(admin)
@@ -74,6 +92,7 @@ def seed_admin():
 # -----------------------------
 # APP CONTEXT & DB CREATION
 # -----------------------------
+# This will create tables if they don't exist, each time the app starts.
 
 # -----------------------------
 # AUTH HELPERS
@@ -228,7 +247,6 @@ def generate_schedule(existing_crops, recommended_crops, lat=None, lon=None, api
             if pd_date in forecast_dict:
                 desc = forecast_dict[pd_date]["weather"]
                 entry["weather_note"] = f"Forecast: {desc}"
-
     return schedule
 
 
@@ -237,10 +255,6 @@ def generate_schedule(existing_crops, recommended_crops, lat=None, lon=None, api
 # -----------------------------
 @app.route("/")
 def home():
-    """
-    The home page: Extended about us and explanation of the process.
-    Provides an overview of what GardenApp does and how to proceed.
-    """
     return render_template("home.html")
 
 # -----------------------------
@@ -267,8 +281,6 @@ def register():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        
-        # NEW: Additional fields
         phone_number = request.form.get("phone_number", "")
         org_email = request.form.get("org_email", "")
 
@@ -282,8 +294,8 @@ def register():
             username=username,
             password=password,
             role="shelter",
-            phone_number=phone_number,   # storing phone
-            org_email=org_email          # storing org email
+            phone_number=phone_number,
+            org_email=org_email
         )
         db.session.add(shelter_user)
         db.session.commit()
@@ -323,8 +335,10 @@ def new_request():
         volume_goal = float(request.form.get("volume_goal", 0))
         calorie_goal = float(request.form.get("calorie_goal", 0))
         additional_needs = request.form.get("additional_needs", "")
-        # NEW: Shelter notes
         shelter_notes = request.form.get("shelter_notes", "")
+
+        # NEW CODE: urgency
+        urgency = int(request.form.get("urgency", 1))
 
         new_req = ProduceRequest(
             user_id=user.id,
@@ -332,7 +346,8 @@ def new_request():
             volume_goal=volume_goal,
             calorie_goal=calorie_goal,
             additional_needs=additional_needs,
-            shelter_notes=shelter_notes
+            shelter_notes=shelter_notes,
+            urgency=urgency
         )
         db.session.add(new_req)
         db.session.commit()
@@ -397,6 +412,7 @@ def generate_schedule_for_request(request_id):
 
     return render_template("schedule_form.html", produce_request=produce_request)
 
+
 @app.route("/shelter/about_creators")
 @requires_login
 def about_creators():
@@ -406,12 +422,83 @@ def about_creators():
         return redirect(url_for("login"))
     return render_template("about_creators.html")
 
+
+# NEW CODE: Admin "Presets" tab for gardens and crops
+@app.route("/admin/presets", methods=["GET", "POST"])
+@requires_admin
+def admin_presets():
+    """
+    Allows admin to add/delete gardens, set each garden's area,
+    and add/delete existing crops with their weeks grown and space used.
+    Also can remove a garden, which should remove the dropdown option for that garden.
+    """
+    # We'll handle all form submissions in a single route for simplicity
+
+    # 1) Handle addition of a new Garden
+    if request.method == "POST" and request.form.get("action") == "add_garden":
+        g_name = request.form.get("garden_name", "").strip()
+        g_area = float(request.form.get("garden_area", 0))
+        if g_name:
+            new_garden = Garden(garden_name=g_name, area_sq_ft=g_area)
+            db.session.add(new_garden)
+            db.session.commit()
+            flash("New garden added.")
+
+    # 2) Handle deletion of a Garden
+    if request.method == "POST" and request.form.get("action") == "delete_garden":
+        garden_id = request.form.get("garden_id_to_delete")
+        if garden_id:
+            garden_obj = Garden.query.get(int(garden_id))
+            if garden_obj:
+                # Deleting garden also deletes associated crops via cascade or manual
+                # If we want manual, do:
+                for c in garden_obj.crops:
+                    db.session.delete(c)
+                db.session.delete(garden_obj)
+                db.session.commit()
+                flash("Garden deleted.")
+
+    # 3) Handle addition of a new GardenCrop
+    if request.method == "POST" and request.form.get("action") == "add_garden_crop":
+        selected_garden = request.form.get("selected_garden")
+        crop_name = request.form.get("crop_name", "").strip()
+        weeks = int(request.form.get("weeks_growing", 0))
+        space_used = float(request.form.get("crop_space", 0))
+        if selected_garden and crop_name:
+            g_obj = Garden.query.get(int(selected_garden))
+            if g_obj:
+                new_crop = GardenCrop(
+                    garden_id=g_obj.id,
+                    crop_name=crop_name,
+                    weeks_growing=weeks,
+                    space_used=space_used
+                )
+                db.session.add(new_crop)
+                db.session.commit()
+                flash("New crop added to the garden.")
+
+    # 4) Handle deletion of a GardenCrop
+    if request.method == "POST" and request.form.get("action") == "delete_garden_crop":
+        crop_id = request.form.get("crop_id_to_delete")
+        if crop_id:
+            crop_obj = GardenCrop.query.get(int(crop_id))
+            if crop_obj:
+                db.session.delete(crop_obj)
+                db.session.commit()
+                flash("Crop deleted.")
+
+    # After handling forms, we fetch updated data
+    all_gardens = Garden.query.all()
+    all_crops = GardenCrop.query.all()
+    return render_template("presets.html", gardens=all_gardens, crops=all_crops)
+
+
 # -----------------------------
 # MAIN
 # -----------------------------
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all()     # Ensure tables are created
-        seed_admin()        # Seed the admin user
+        db.create_all()
+        seed_admin()
 
     app.run(debug=True)
