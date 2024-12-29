@@ -372,6 +372,15 @@ def generate_schedule_for_request(request_id):
 
     return render_template("schedule_form.html", produce_request=produce_request)
 
+@app.route("/shelter/about_creators")
+@requires_login
+def about_creators():
+    user = current_user()
+    if user.role != "shelter":
+        flash("Shelter access only.")
+        return redirect(url_for("login"))
+    return render_template("about_creators.html")
+
 # -----------------------------
 # MAIN
 # -----------------------------
