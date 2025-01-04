@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>{% block title %}GardenApp{% endblock %}</title>
+  <title>{% block title %}Verdant{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
@@ -11,8 +11,8 @@
   <nav class="navbar">
     <div class="nav-left">
       <!-- Logo placeholder: place the file in static/ with name "logo.png" -->
-      <img src="{{ url_for('static', filename='logo.png') }}" alt="GardenApp Logo" class="logo" />
-      <h1 class="site-title">GardenApp</h1>
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="Verdant Logo" class="logo" />
+      <h1 class="site-title">Verdant</h1>
     </div>
     <div class="nav-right">
       <!-- Example nav links -->
@@ -29,7 +29,7 @@
   <header class="hero-section">
     <!-- Put a large hero background image in styles.css or inline here -->
     <div class="hero-content">
-      <h2>Welcome to GardenApp</h2>
+      <h2>Welcome to Verdant</h2>
       <p>Empowering Shelters with Fresh Produce</p>
       <!-- A call-to-action button that slides or animates on hover -->
       <a href="{{ url_for('new_request') }}" class="cta-button">Create a New Request</a>
@@ -46,7 +46,7 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <p>© 2024 GardenApp. All rights reserved.</p>
+    <p>© 2024 Verdant. All rights reserved.</p>
   </footer>
 </body>
 </html>
