@@ -33,8 +33,8 @@ body {
 }
 
 .logo {
-  width: 70px;  /* Increase size */
-  height: 70px; /* Keep it square */
+  width: 80px;  /* Increase size */
+  height: 80px; /* Keep it square */
   object-fit: contain;
   margin-right: 1rem; /* Adds space between logo and text */
 }
@@ -42,7 +42,7 @@ body {
 
 .site-title {
   font-family: 'Poppins', sans-serif;
-  font-size: 3vw; /* Adjusts based on screen width */
+   font-size: 1.3rem; /* Slightly smaller */
   font-weight: 600;
   color: #fff;
 }
