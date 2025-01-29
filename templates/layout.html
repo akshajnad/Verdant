@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+  <body class="{% block body_class %}{% endblock %}">
+
   <!-- NAV BAR -->
   <nav class="navbar">
     <div class="nav-left">
