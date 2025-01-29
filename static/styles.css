@@ -33,15 +33,15 @@ body {
 }
 
 .logo {
-  width: 50px;
-  height: 50px;
+   width: 3rem;  /* Matches with title's rem size */
+  height: 3rem; /* Keeps it proportional */
   object-fit: contain;
   margin-right: 0.8rem;
 }
 
 .site-title {
   font-family: 'Poppins', sans-serif;
-  font-size: 3vw; /* Adjusts based on screen width */
+  font-size: 2rem; /* Adjusts based on screen width */
   font-weight: 600;
   color: #fff;
 }
