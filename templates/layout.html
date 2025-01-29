@@ -6,23 +6,22 @@
   <title>{% block title %}Verdant{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
-  <body class="{% block body_class %}{% endblock %}">
+<body class="{% block body_class %}{% endblock %}">
 
   <!-- NAV BAR -->
   <nav class="navbar">
     <div class="nav-left">
-  <a href="{{ url_for('home') }}">
-    <img src="{{ url_for('static', filename='Screenshot_2025-01-03_at_7.28.24_PM-removebg-preview.png') }}" 
-         alt="Verdant Logo" class="logo" />
-  </a>
-  <h1 class="site-title">Verdant</h1>
-</div>
+      <a href="{{ url_for('home') }}">
+        <img src="{{ url_for('static', filename='Screenshot_2025-01-03_at_7.28.24_PM-removebg-preview.png') }}" 
+             alt="Verdant Logo" class="logo" />
+      </a>
+      <h1 class="site-title">Verdant</h1>
+    </div>
 
     <div class="nav-right">
       <!-- Example nav links -->
       <a href="{{ url_for('home') }}">Home</a>
-    <a href="{{ url_for('login') }}">Login/Register</a>
+      <a href="{{ url_for('login') }}">Login/Register</a>
       <a href="{{ url_for('shelter_dashboard') }}">Dashboard</a>
       <a href="{{ url_for('new_request') }}">New Request</a>
       <a href="{{ url_for('about_creators') }}">About the Creators</a>
@@ -53,5 +52,6 @@
   <footer class="footer">
     <p>© 2025 Verdant. All rights reserved.</p>
   </footer>
+
 </body>
 </html>
