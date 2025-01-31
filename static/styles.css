@@ -11,7 +11,7 @@
 }
 
 .home-bg {
-  background-image: url('/static/crop.jpg'); /* Path to your crop.jpg image */
+   /* Path to your crop.jpg image */
   background-size: cover;
   background-position: center;
   height: 100vh; /* Optional: Ensures the background covers the full viewport */
