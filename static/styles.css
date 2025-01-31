@@ -80,7 +80,7 @@ body {
 }
 
 .nav-right a:not(.active) {
-  color: #666; /* Dark grey color for inactive links */
+  color: #edf0f0; /* Dark grey color for inactive links */
 }
 
 
