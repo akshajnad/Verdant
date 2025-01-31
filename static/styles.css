@@ -47,6 +47,7 @@ body {
 .nav-left {
   display: flex;
   align-items: center;
+    justify-content: center; /* Horizontally center the logo and title */
 }
 
 .logo {
