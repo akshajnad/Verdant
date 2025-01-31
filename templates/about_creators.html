@@ -2,13 +2,13 @@
 {% extends "layout.html" %}
 {% block title %}About the Creators | Verdant{% endblock %}
 
+{% block hero_section %}{% endblock %}  <!-- This removes the hero section -->
+
 {% block content %}
 <h2>Meet the Creators</h2>
 
 <div class="creator-section">
   <div class="creator-card">
-    <!-- For Akshaj's photo, put the file in static/ as akshaj.jpg -->
-    <!-- Replace "akshaj.jpg" with the actual filename -->
     <img src="{{ url_for('static', filename='3354504d-9c8d-4712-82d3-2d3b2811cc41.jpg') }}" alt="Akshaj Nadimpalli Photo" class="creator-photo">
     <h3>Akshaj Nadimpalli</h3>
     <p><strong>Role:</strong> Founder & Developer</p>
@@ -17,15 +17,11 @@
     </p>
   </div>
 
-   <div class="creator-card">
-    < For Aadi's photo, put the file in static/ as aadi.jpg >
-<img src="{{ url_for('static', filename='aadi.jpg') }}" alt="Aadi Alsi Photo" class="creator-photo">
+  <div class="creator-card">
+    <img src="{{ url_for('static', filename='aadi.jpg') }}" alt="Aadi Alsi Photo" class="creator-photo">
     <h3>Aadi Alsi</h3>
     <p><strong>Role:</strong> Outreach Lead</p>
-    <p>
-      Aadi description
-    </p>
-  </div> 
-
+    <p>Aadi's description...</p>
+  </div>
 </div>
 {% endblock %}
