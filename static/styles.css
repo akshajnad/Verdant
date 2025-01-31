@@ -82,6 +82,7 @@ body {
 
 .nav-right a:not(.active) {
   color: #edf0f0; /* Dark grey color for inactive links */
+  font-weight: bold; /* Makes the text bold on the current link */
 }
 
 
