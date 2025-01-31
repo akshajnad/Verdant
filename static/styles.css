@@ -75,8 +75,12 @@ body {
 }
 
 .nav-right a:hover {
-  color: #008080; /* Green text on hover */
-  background-color: white; /* White oval effect */
+  color: white; /* White text on hover */
+  background-color: #006969; /* Darker green background on hover */
+}
+
+.nav-right a:not(.active) {
+  color: #666; /* Dark grey color for inactive links */
 }
 
 
