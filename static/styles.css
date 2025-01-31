@@ -249,7 +249,9 @@ textarea:focus {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  margin-top: 1rem;
+  margin-top: 60px;
+
+
 }
 
 .creator-card {
