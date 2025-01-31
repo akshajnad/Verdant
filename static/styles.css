@@ -66,16 +66,20 @@ body {
 
 
 .nav-right a {
-  color: #fff;
+  font-size: 1.3rem; /* Increase text size but smaller than the site title */
   text-decoration: none;
-  margin-left: 1.2rem;
-  font-size: 1rem;
-  transition: color 0.3s ease;
+  color: #fff; /* Keep the same text color */
+  padding: 10px 20px; /* Adds padding to create an oval hover effect */
+  border-radius: 25px; /* Makes it oval */
+  transition: all 0.3s ease-in-out;
 }
 
 .nav-right a:hover {
-  color: #ffdb58; /* Light golden color on hover */
+  color: #008000; /* Green text on hover */
+  background-color: white; /* White oval effect */
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Soft glowing effect */
 }
+
 
 /* Hero Section */
 .hero-section {
