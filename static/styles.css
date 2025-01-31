@@ -75,9 +75,8 @@ body {
 }
 
 .nav-right a:hover {
-  color: #008000; /* Green text on hover */
+  color: #008080; /* Green text on hover */
   background-color: white; /* White oval effect */
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Soft glowing effect */
 }
 
 
