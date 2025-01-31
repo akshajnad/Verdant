@@ -87,7 +87,9 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  margin-top: 80px; /* Adjust based on navbar height */
 }
+
 
 .hero-content {
   text-align: center;
