@@ -32,7 +32,16 @@ body {
   align-items: center;
   background-color: #008080; /* Teal color */
   padding: 1rem 2rem;
+  width: 80%; /* Adjust width to make it smaller than full page */
+  margin: 0 auto; /* Centers the navbar */
+  border-radius: 50px; /* Gives it a curved shape */
+  position: absolute;
+  top: 20px; /* Moves it down a bit from the top */
+  left: 50%;
+  transform: translateX(-50%); /* Centers it properly */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
 }
+
 
 .nav-left {
   display: flex;
