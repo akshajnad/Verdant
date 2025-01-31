@@ -79,10 +79,12 @@ body {
   background-color: #006969; /* Darker green background on hover */
 }
 
+.nav-right a.active {
+  font-weight: bold; /* Only the active link will be bold */
+}
 
 .nav-right a:not(.active) {
   color: #edf0f0; /* Dark grey color for inactive links */
-  font-weight: bold; /* Makes the text bold on the current link */
 }
 
 
