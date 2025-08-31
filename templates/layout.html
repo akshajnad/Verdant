@@ -65,6 +65,7 @@
 
   const revealElems = document.querySelectorAll('.reveal');
 
+
   const cards = document.querySelectorAll('.feature-card');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -90,6 +91,7 @@
       showSlide(currentSlide);
     }, 5000);
   }
+
 
   cards.forEach(card => observer.observe(card));
   </script>
