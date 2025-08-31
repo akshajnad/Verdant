@@ -312,7 +312,7 @@ table th {
 .schedule-item {
   position: relative;
   margin: 0.5rem 0;
-  padding: 0.5rem 2rem 0.5rem 0.5rem;
+  padding: 0.5rem 4rem 0.5rem 0.5rem;
   background: #f9f9f9;
   border-radius: 4px;
 }
@@ -326,7 +326,7 @@ table th {
 .star-btn {
   position: absolute;
   bottom: 5px;
-  right: 5px;
+  right: 35px;
   background: none;
   border: none;
   font-size: 1.2rem;
@@ -337,6 +337,18 @@ table th {
 .star-btn.favorite {
   color: gold;
 }
+
+.delete-btn {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #d33;
+}
+
 .schedule-item form {
   display: inline;
 }
