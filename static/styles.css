@@ -3,6 +3,12 @@
 /* Google Fonts (Optional) */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@600&display=swap');
 
+:root {
+  --primary-color: #008080;
+  --primary-dark: #006969;
+  --accent-color: #ffdb58;
+}
+
 /* Reset / Box-Sizing */
 * {
   margin: 0;
@@ -30,17 +36,18 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #008080; /* Teal color */
+  background-color: var(--primary-color);
   padding: 1rem 2rem;
-  width: 80%; /* Adjust width to make it smaller than full page */
-  margin: 0 auto; /* Centers the navbar */
-  border-radius: 50px; /* Gives it a curved shape */
+  width: 80%;
+  margin: 0 auto;
+  border-radius: 50px;
   position: absolute;
-  top: 20px; /* Moves it down a bit from the top */
+  top: 20px;
   left: 50%;
-  transform: translateX(-50%); /* Centers it properly */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow */
-  z-index: 1000; /* Makes sure it's on top */
+  transform: translateX(-50%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: slideDown 0.6s ease;
 }
 
 
@@ -76,8 +83,8 @@ body {
 }
 
 .nav-right a:hover {
-  color: white !important; /* Force white text color on hover */
-  background-color: #006969; /* Darker green background on hover */
+  color: #fff !important;
+  background-color: var(--primary-dark);
 }
 
 .nav-right a.active {
@@ -100,6 +107,7 @@ body {
   justify-content: center;
   overflow: hidden;
   margin-top: 200px; /* Adjust based on navbar height */
+  animation: heroZoom 20s ease-in-out infinite alternate;
 }
 
 
@@ -109,6 +117,7 @@ body {
   background-color: rgba(0, 0, 0, 0.4); /* subtle overlay */
   padding: 2rem;
   border-radius: 8px;
+  animation: fadeIn 1.2s ease;
 }
 
 .hero-content h2 {
@@ -124,7 +133,7 @@ body {
 
 .cta-button {
   display: inline-block;
-  background-color: #ffdb58;
+  background-color: var(--accent-color);
   color: #333;
   padding: 0.8rem 1.2rem;
   border-radius: 4px;
@@ -156,6 +165,39 @@ body {
 }
 .fade-in-animation {
   animation: fadeIn 0.7s ease-in-out;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes heroZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.feature-card {
+  flex: 1 1 250px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+
+.feature-card.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Footer */
@@ -351,4 +393,25 @@ table th {
 
 .schedule-item form {
   display: inline;
+}
+
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 0.8rem;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.back-to-top.show {
+  opacity: 1;
+  pointer-events: auto;
 }
