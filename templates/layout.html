@@ -63,6 +63,8 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
+  const revealElems = document.querySelectorAll('.reveal');
+
   const cards = document.querySelectorAll('.feature-card');
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
@@ -72,6 +74,23 @@
       }
     });
   }, { threshold: 0.2 });
+  revealElems.forEach(el => observer.observe(el));
+
+  const slides = document.querySelectorAll('.slide');
+  let currentSlide = 0;
+  function showSlide(index) {
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === index);
+    });
+  }
+  if (slides.length) {
+    showSlide(currentSlide);
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % slides.length;
+      showSlide(currentSlide);
+    }, 5000);
+  }
+
   cards.forEach(card => observer.observe(card));
   </script>
 
