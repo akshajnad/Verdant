@@ -21,9 +21,8 @@
     <div class="nav-right">
       <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a>
       <a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a>
-      <a href="{{ url_for('shelter_dashboard') }}" class="{% if request.endpoint == 'shelter_dashboard' %}active{% endif %}">Dashboard</a>
-      <a href="{{ url_for('new_request') }}" class="{% if request.endpoint == 'new_request' %}active{% endif %}">New Request</a>
-      <a href="{{ url_for('about_creators') }}" class="{% if request.endpoint == 'about_creators' %}active{% endif %}">About Us</a>
+      <a href="{{ url_for('register') }}" class="{% if request.endpoint == 'register' %}active{% endif %}">Register</a>
+      <a href="{{ url_for('generate_schedule_view') }}" class="{% if request.endpoint == 'generate_schedule_view' %}active{% endif %}">Generate Schedule</a>
       <a href="{{ url_for('logout') }}" class="{% if request.endpoint == 'logout' %}active{% endif %}">Logout</a>
     </div>
   </nav>
@@ -33,8 +32,8 @@
   <header class="hero-section">
     <div class="hero-content">
       <h2>Welcome to Verdant</h2>
-      <p>Empowering Shelters with Fresh Produce</p>
-      <a href="{{ url_for('new_request') }}" class="cta-button">Create a New Request</a>
+      <p>Plan your garden with tailored planting schedules.</p>
+      <a href="{{ url_for('generate_schedule_view') }}" class="cta-button">Generate a Schedule</a>
     </div>
   </header>
   {% endblock %}
