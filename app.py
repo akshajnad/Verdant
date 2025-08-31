@@ -5,9 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import pandas as pd
 
-# If using optional weather integration:
-from weather_api_helper import get_weather_forecast
-
 app = Flask(__name__)
 app.secret_key = "SUPER_SECRET_KEY_CHANGE_THIS"
 
@@ -169,7 +166,7 @@ def generate_planting_diagram(existing_crops, recommended_crops, garden_size):
 
     return diagram
 
-def generate_schedule(existing_crops, recommended_crops, lat=None, lon=None, api_key=None):
+def generate_schedule(existing_crops, recommended_crops):
     schedule = []
     # existing
     for ecrop in existing_crops:
@@ -199,15 +196,6 @@ def generate_schedule(existing_crops, recommended_crops, lat=None, lon=None, api
             "weather_note": ""
         })
 
-    # optionally factor in weather
-    if api_key and lat is not None and lon is not None:
-        forecast = get_weather_forecast(api_key, lat, lon)
-        forecast_dict = {day["date"]: day for day in forecast}
-        for entry in schedule:
-            pd_date = entry["planting_date"]
-            if pd_date in forecast_dict:
-                desc = forecast_dict[pd_date]["weather"]
-                entry["weather_note"] = f"Forecast: {desc}"
     return schedule
 
 
@@ -278,11 +266,6 @@ def generate_schedule_view():
         urgency = int(request.form.get("urgency", 1))
         garden_size = float(request.form.get("garden_size", 0))
         existing_crops_str = request.form.get("existing_crops", "")
-        lat_val = request.form.get("latitude")
-        lon_val = request.form.get("longitude")
-        api_key = request.form.get("api_key", None)
-        lat = float(lat_val) if lat_val else None
-        lon = float(lon_val) if lon_val else None
 
         produce_request = ProduceRequest(
             user_id=user.id,
@@ -309,7 +292,7 @@ def generate_schedule_view():
         )
 
         diagram = generate_planting_diagram(existing_crops, recommended_crops, garden_size)
-        schedule = generate_schedule(existing_crops, recommended_crops, lat, lon, api_key)
+        schedule = generate_schedule(existing_crops, recommended_crops)
 
         return render_template(
             "schedule_view.html",
