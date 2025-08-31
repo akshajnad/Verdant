@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Schedule & Diagram</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+{% extends "layout.html" %}
+{% block title %}Schedule | Verdant{% endblock %}
 
-</head>
-<body>
-<h1>Schedule for Request #{{ produce_request.id }}</h1>
-<h2>Diagram</h2>
+{% block content %}
+<h2>Your Planting Schedule</h2>
+<h3>Diagram</h3>
 <pre>{{ diagram }}</pre>
 
-<h2>Detailed Schedule</h2>
+<h3>Detailed Schedule</h3>
 <table border="1" cellpadding="5">
     <tr>
         <th>Crop</th>
@@ -32,6 +28,6 @@
     {% endfor %}
 </table>
 
-<p><a href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a></p>
-</body>
-</html>
+<p><a href="{{ url_for('generate_schedule_view') }}">Generate Another Schedule</a></p>
+{% endblock %}
+

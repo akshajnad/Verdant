@@ -1,13 +1,27 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Generate Schedule</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+{% extends "layout.html" %}
+{% block title %}Generate Schedule | Verdant{% endblock %}
 
-</head>
-<body>
-<h1>Generate Schedule for Request #{{ produce_request.id }}</h1>
+{% block content %}
+<h2>Generate a Planting Schedule</h2>
 <form method="POST">
+    <label>Number of People:</label><br>
+    <input type="number" name="num_people" required><br><br>
+
+    <label>Volume Goal (lbs/week):</label><br>
+    <input type="number" step="0.1" name="volume_goal"><br><br>
+
+    <label>Calorie Goal (daily per person):</label><br>
+    <input type="number" step="0.1" name="calorie_goal"><br><br>
+
+    <label>Additional Needs (e.g. 'leafy greens'):</label><br>
+    <input type="text" name="additional_needs"><br><br>
+
+    <label>Notes:</label><br>
+    <textarea name="shelter_notes" rows="4"></textarea><br><br>
+
+    <label>Urgency (1 = Low, 5 = Very High):</label><br>
+    <input type="number" name="urgency" min="1" max="5" value="1"><br><br>
+
     <label>Garden Size (sq ft):</label><br>
     <input type="number" step="0.1" name="garden_size" required><br><br>
 
@@ -23,7 +37,7 @@
     <label>OpenWeatherMap API key (optional):</label><br>
     <input type="text" name="api_key"><br><br>
 
-    <input type="submit" value="Generate">
+    <button type="submit" class="btn">Generate</button>
 </form>
-</body>
-</html>
+{% endblock %}
+
