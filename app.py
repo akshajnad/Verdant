@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -51,6 +52,16 @@ class ProduceRequest(db.Model):
 
     # NEW CODE: Urgency field
     urgency = db.Column(db.Integer, default=1)  # Shelter can rank 1=low, 5=high, etc.
+
+class SavedSchedule(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    is_favorite = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    diagram = db.Column(db.Text, default="")
+    schedule_json = db.Column(db.Text, default="")
+    user = db.relationship("User", backref=db.backref("saved_schedules", lazy=True))
 # -----------------------------
 # APP CONTEXT & DB CREATION
 # -----------------------------
@@ -304,10 +315,75 @@ def generate_schedule_view():
             "schedule_view.html",
             produce_request=produce_request,
             diagram=diagram,
-            schedule=schedule
+            schedule=schedule,
+            allow_save=True
         )
 
     return render_template("schedule_form.html")
+
+
+@app.route("/save_schedule", methods=["POST"])
+@requires_login
+def save_schedule():
+    user = current_user()
+    name = request.form.get("name", "Untitled")
+    is_favorite = request.form.get("is_favorite") == "1"
+    diagram = request.form.get("diagram", "")
+    schedule_json = request.form.get("schedule_json", "")
+    new_sched = SavedSchedule(
+        user_id=user.id,
+        name=name,
+        is_favorite=is_favorite,
+        diagram=diagram,
+        schedule_json=schedule_json,
+    )
+    db.session.add(new_sched)
+    db.session.commit()
+    flash("Schedule saved.")
+    return redirect(url_for("saved_schedules"))
+
+
+@app.route("/schedules")
+@requires_login
+def saved_schedules():
+    user = current_user()
+    schedules = (
+        SavedSchedule.query.filter_by(user_id=user.id)
+        .order_by(SavedSchedule.created_at.desc())
+        .all()
+    )
+    return render_template("schedules.html", schedules=schedules)
+
+
+@app.route("/schedules/<int:schedule_id>")
+@requires_login
+def view_schedule(schedule_id):
+    sched = SavedSchedule.query.get_or_404(schedule_id)
+    if sched.user_id != current_user().id:
+        flash("Unauthorized")
+        return redirect(url_for("saved_schedules"))
+    try:
+        schedule = json.loads(sched.schedule_json) if sched.schedule_json else []
+    except Exception:
+        schedule = []
+    return render_template(
+        "schedule_view.html",
+        diagram=sched.diagram,
+        schedule=schedule,
+        allow_save=False,
+    )
+
+
+@app.route("/schedules/<int:schedule_id>/toggle_favorite", methods=["POST"])
+@requires_login
+def toggle_favorite(schedule_id):
+    sched = SavedSchedule.query.get_or_404(schedule_id)
+    if sched.user_id != current_user().id:
+        flash("Unauthorized")
+        return redirect(url_for("saved_schedules"))
+    sched.is_favorite = not sched.is_favorite
+    db.session.commit()
+    return redirect(url_for("saved_schedules"))
 
 # -----------------------------
 # MAIN

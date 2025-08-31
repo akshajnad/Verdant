@@ -27,7 +27,28 @@
     </tr>
     {% endfor %}
 </table>
-
-<p><a href="{{ url_for('generate_schedule_view') }}">Generate Another Schedule</a></p>
+{% if allow_save %}
+<button id="saveBtn" class="btn">Save</button>
+<button id="deleteBtn" class="btn">Delete</button>
+<form id="saveForm" method="POST" action="{{ url_for('save_schedule') }}">
+    <input type="hidden" name="name" id="scheduleName">
+    <input type="hidden" name="is_favorite" id="scheduleFavorite">
+    <textarea name="diagram" style="display:none;">{{ diagram }}</textarea>
+    <textarea name="schedule_json" style="display:none;">{{ schedule|tojson }}</textarea>
+</form>
+<script>
+document.getElementById('saveBtn').addEventListener('click', function() {
+    const name = prompt('Enter a name for this schedule:');
+    if (!name) return;
+    const favorite = confirm('Favorite this schedule?');
+    document.getElementById('scheduleName').value = name;
+    document.getElementById('scheduleFavorite').value = favorite ? '1' : '0';
+    document.getElementById('saveForm').submit();
+});
+document.getElementById('deleteBtn').addEventListener('click', function() {
+    window.location.href = "{{ url_for('home') }}";
+});
+</script>
+{% endif %}
 {% endblock %}
 

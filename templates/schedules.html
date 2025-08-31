@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block title %}Schedules | Verdant{% endblock %}
+
+{% block content %}
+<h2>My Schedules</h2>
+{% if schedules %}
+<ul class="schedule-list">
+  {% for s in schedules %}
+  <li class="schedule-item">
+    <a href="{{ url_for('view_schedule', schedule_id=s.id) }}">{{ s.name }}</a>
+    <form method="POST" action="{{ url_for('toggle_favorite', schedule_id=s.id) }}">
+      <button class="star-btn {% if s.is_favorite %}favorite{% endif %}" title="Toggle favorite">★</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No schedules saved yet.</p>
+{% endif %}
+{% endblock %}
