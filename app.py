@@ -385,6 +385,19 @@ def toggle_favorite(schedule_id):
     db.session.commit()
     return redirect(url_for("saved_schedules"))
 
+
+@app.route("/schedules/<int:schedule_id>/delete", methods=["POST"])
+@requires_login
+def delete_schedule(schedule_id):
+    sched = SavedSchedule.query.get_or_404(schedule_id)
+    if sched.user_id != current_user().id:
+        flash("Unauthorized")
+        return redirect(url_for("saved_schedules"))
+    db.session.delete(sched)
+    db.session.commit()
+    flash("Schedule deleted.")
+    return redirect(url_for("saved_schedules"))
+
 # -----------------------------
 # MAIN
 # -----------------------------

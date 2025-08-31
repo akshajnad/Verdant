@@ -11,6 +11,9 @@
     <form method="POST" action="{{ url_for('toggle_favorite', schedule_id=s.id) }}">
       <button class="star-btn {% if s.is_favorite %}favorite{% endif %}" title="Toggle favorite">★</button>
     </form>
+    <form method="POST" action="{{ url_for('delete_schedule', schedule_id=s.id) }}" onsubmit="return confirm('Are you sure you want to delete this schedule?');">
+      <button class="delete-btn" title="Delete schedule">🗑</button>
+    </form>
   </li>
   {% endfor %}
 </ul>
