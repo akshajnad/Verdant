@@ -8,3 +8,6 @@ Flask-SQLAlchemy==3.0.5
 Werkzeug==2.3.7
 setuptools>=69
 wheel
+transformers<5
+safetensors
+tokenizers>=0.14,<0.21   # optional pin
