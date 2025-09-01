@@ -1,0 +1,14 @@
+requests==2.31.0
+Flask==3.0.3
+gunicorn==22.0.0
+pandas==2.1.4
+numpy==1.26.4
+scikit-learn==1.2.2
+joblib==1.2.0
+Flask-SQLAlchemy==3.0.5
+Werkzeug==2.3.7
+setuptools>=69
+wheel
+transformers<5
+safetensors
+tokenizers>=0.14,<0.21
