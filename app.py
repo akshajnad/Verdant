@@ -6,7 +6,7 @@ from datetime import datetime
 import pandas as pd
 
 app = Flask(__name__)
-app.secret_key = "nigger"
+app.secret_key = "SUPER_SECRET_KEY_CHANGE_THIS"
 
 # -----------------------------
 # DATABASE CONFIG
