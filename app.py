@@ -6,7 +6,19 @@ from datetime import datetime
 import pandas as pd
 
 app = Flask(__name__)
-app.secret_key = "nigger"
+app.secret_key = os.getenv("SECRET_KEY", "dev-insecure-override-this")
+
+# ---- Database: prefer DATABASE_URL (e.g., Render Postgres), else local SQLite ----
+basedir = os.path.abspath(os.path.dirname(__file__))
+default_sqlite = f"sqlite:///{os.path.join(basedir, 'app.db')}"
+db_uri = os.getenv("DATABASE_URL", default_sqlite)
+
+# Render sometimes provides postgres://; SQLAlchemy expects postgresql://
+if db_uri.startswith("postgres://"):
+    db_uri = db_uri.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # -----------------------------
 # DATABASE CONFIG
@@ -17,6 +29,13 @@ app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+
+# Create tables at import time so Gunicorn workers have the schema
+with app.app_context():
+    try:
+        db.create_all()
+    except Exception as e:
+        app.logger.warning(f"DB init skipped/failed: {e}")
 
 # -----------------------------
 # MODELS
@@ -252,6 +271,9 @@ def logout():
     session.clear()
     return redirect(url_for("login"))
 
+@app.get("/health")
+def health():
+    return {"status": "ok"}, 200
 
 @app.route("/generate_schedule", methods=["GET", "POST"])
 @requires_login
