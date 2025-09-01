@@ -6,7 +6,7 @@ from datetime import datetime
 import pandas as pd
 
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "dev-insecure-override-this")
+app.secret_key = os.getenv("verdant157", "override")
 
 # ---- Database: prefer DATABASE_URL (e.g., Render Postgres), else local SQLite ----
 basedir = os.path.abspath(os.path.dirname(__file__))
