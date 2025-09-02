@@ -20,6 +20,12 @@ if db_uri.startswith("postgres://"):
 app.config["SQLALCHEMY_DATABASE_URI"] = db_uri
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
+# Safer engine settings for SQLite under WSGI
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_pre_ping": True,
+    "connect_args": {"check_same_thread": False},  # allow use across threads
+}
+
 # -----------------------------
 # DATABASE CONFIG
 # -----------------------------
