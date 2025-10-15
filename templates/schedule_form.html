@@ -2,33 +2,70 @@
 {% block title %}Generate Schedule | Verdant{% endblock %}
 
 {% block content %}
-<h2>Generate a Planting Schedule</h2>
-<form method="POST">
-    <label>Number of People:</label><br>
-    <input type="number" name="num_people" required><br><br>
-
-    <label>Volume Goal (lbs/week):</label><br>
-    <input type="number" step="0.1" name="volume_goal"><br><br>
-
-    <label>Calorie Goal (daily per person):</label><br>
-    <input type="number" step="0.1" name="calorie_goal"><br><br>
-
-    <label>Additional Needs (e.g. 'leafy greens'):</label><br>
-    <input type="text" name="additional_needs"><br><br>
-
-    <label>Notes:</label><br>
-    <textarea name="shelter_notes" rows="4"></textarea><br><br>
-
-    <label>Urgency (1 = Low, 5 = Very High):</label><br>
-    <input type="number" name="urgency" min="1" max="5" value="1"><br><br>
-
-    <label>Garden Size (sq ft):</label><br>
-    <input type="number" step="0.1" name="garden_size" required><br><br>
-
-    <label>Existing Crops (e.g. 'Tomatoes:50:4;Lettuce:25:2'):</label><br>
-    <input type="text" name="existing_crops"><br><br>
-
-    <button type="submit" class="btn">Generate</button>
-</form>
+<section class="mx-auto max-w-3xl space-y-10">
+    <header class="space-y-3">
+        <h1 class="text-3xl font-semibold text-charcoal">Generate a planting schedule</h1>
+        <p class="text-base text-charcoal/70">Tell us about your community garden and goals. Verdant will craft a schedule that balances yield, nutrition, and care routines.</p>
+    </header>
+    <form method="POST" class="space-y-8">
+        <div class="rounded-3xl border border-verdant/10 bg-white p-6 shadow-md">
+            <h2 class="text-xl font-semibold text-charcoal">Community needs</h2>
+            <p class="mt-1 text-sm text-charcoal/60">We use this information to align harvest volume with the number of people you support.</p>
+            <div class="mt-6 grid gap-6 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <label for="num_people" class="form-label">Number of people</label>
+                    <input id="num_people" type="number" name="num_people" required class="form-input" min="1">
+                </div>
+                <div>
+                    <label for="volume_goal" class="form-label">Volume goal (lbs/week)</label>
+                    <input id="volume_goal" type="number" step="0.1" name="volume_goal" class="form-input" min="0">
+                    <p class="form-hint">Estimate how many pounds of produce you aim to harvest each week.</p>
+                </div>
+                <div>
+                    <label for="calorie_goal" class="form-label">Calorie goal (daily per person)</label>
+                    <input id="calorie_goal" type="number" step="0.1" name="calorie_goal" class="form-input" min="0">
+                    <p class="form-hint">Optional: helps us balance leafy greens with calorie-dense crops.</p>
+                </div>
+            </div>
+        </div>
+        <div class="rounded-3xl border border-verdant/10 bg-white p-6 shadow-md">
+            <h2 class="text-xl font-semibold text-charcoal">Growing preferences</h2>
+            <p class="mt-1 text-sm text-charcoal/60">Share additional notes so we can include crops that matter most.</p>
+            <div class="mt-6 grid gap-6">
+                <div>
+                    <label for="additional_needs" class="form-label">Additional needs</label>
+                    <input id="additional_needs" type="text" name="additional_needs" class="form-input" placeholder="e.g. leafy greens for salads">
+                </div>
+                <div>
+                    <label for="shelter_notes" class="form-label">Notes</label>
+                    <textarea id="shelter_notes" name="shelter_notes" rows="4" class="form-input"></textarea>
+                </div>
+                <div>
+                    <label for="urgency" class="form-label">Urgency</label>
+                    <input id="urgency" type="number" name="urgency" min="1" max="5" value="1" class="form-input">
+                    <p class="form-hint">1 = planning ahead, 5 = immediate need.</p>
+                </div>
+            </div>
+        </div>
+        <div class="rounded-3xl border border-verdant/10 bg-white p-6 shadow-md">
+            <h2 class="text-xl font-semibold text-charcoal">Garden details</h2>
+            <p class="mt-1 text-sm text-charcoal/60">Describe the space you have so we can optimize spacing and rotations.</p>
+            <div class="mt-6 grid gap-6 sm:grid-cols-2">
+                <div class="sm:col-span-2">
+                    <label for="garden_size" class="form-label">Garden size (sq ft)</label>
+                    <input id="garden_size" type="number" step="0.1" name="garden_size" required class="form-input" min="0">
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="existing_crops" class="form-label">Existing crops</label>
+                    <input id="existing_crops" type="text" name="existing_crops" class="form-input" placeholder="Tomatoes:50:4;Lettuce:25:2">
+                    <p class="form-hint">Format: Crop:Quantity:Weeks remaining. Separate entries with semicolons.</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <a href="{{ url_for('home') }}" class="inline-flex items-center justify-center rounded-full border border-charcoal px-6 py-3 text-sm font-semibold text-charcoal transition hover:bg-charcoal hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-charcoal">Cancel</a>
+            <button type="submit" class="inline-flex items-center justify-center rounded-full bg-verdant px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-verdant/30 transition hover:-translate-y-0.5 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-verdant">Generate schedule</button>
+        </div>
+    </form>
+</section>
 {% endblock %}
-

@@ -2,53 +2,78 @@
 {% block title %}Schedule | Verdant{% endblock %}
 
 {% block content %}
-<h2>Your Planting Schedule</h2>
-<h3>Diagram</h3>
-<pre>{{ diagram }}</pre>
+<section class="space-y-10">
+    <header class="space-y-3">
+        <h1 class="text-3xl font-semibold text-charcoal">Your planting schedule</h1>
+        <p class="text-base text-charcoal/70">Review each crop's tasks and timeline. Save the plan to revisit it later or mark it as a favorite for quick access.</p>
+    </header>
 
-<h3>Detailed Schedule</h3>
-<table border="1" cellpadding="5">
-    <tr>
-        <th>Crop</th>
-        <th>Planting Date</th>
-        <th>Watering Instructions</th>
-        <th>Weeding Instructions</th>
-        <th>Harvest Info</th>
-        <th>Weather Note</th>
-    </tr>
-    {% for s in schedule %}
-    <tr>
-        <td>{{ s.crop }}</td>
-        <td>{{ s.planting_date }}</td>
-        <td>{{ s.watering_instructions }}</td>
-        <td>{{ s.weeding_instructions }}</td>
-        <td>{{ s.harvest_info }}</td>
-        <td>{{ s.weather_note }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% if allow_save %}
-<button id="saveBtn" class="btn">Save</button>
-<button id="deleteBtn" class="btn">Delete</button>
-<form id="saveForm" method="POST" action="{{ url_for('save_schedule') }}">
-    <input type="hidden" name="name" id="scheduleName">
-    <input type="hidden" name="is_favorite" id="scheduleFavorite">
-    <textarea name="diagram" style="display:none;">{{ diagram }}</textarea>
-    <textarea name="schedule_json" style="display:none;">{{ schedule|tojson }}</textarea>
-</form>
-<script>
-document.getElementById('saveBtn').addEventListener('click', function() {
-    const name = prompt('Enter a name for this schedule:');
-    if (!name) return;
-    const favorite = confirm('Favorite this schedule?');
-    document.getElementById('scheduleName').value = name;
-    document.getElementById('scheduleFavorite').value = favorite ? '1' : '0';
-    document.getElementById('saveForm').submit();
-});
-document.getElementById('deleteBtn').addEventListener('click', function() {
-    window.location.href = "{{ url_for('home') }}";
-});
-</script>
-{% endif %}
+    <section aria-labelledby="diagram-heading" class="rounded-3xl border border-verdant/10 bg-white p-6 shadow-md">
+        <div class="flex items-center justify-between gap-4">
+            <h2 id="diagram-heading" class="text-xl font-semibold text-charcoal">Garden layout diagram</h2>
+        </div>
+        <pre class="mt-4 overflow-x-auto rounded-2xl bg-charcoal text-sm text-mist shadow-inner"><code class="block whitespace-pre px-5 py-4">{{ diagram }}</code></pre>
+    </section>
+
+    <section aria-labelledby="schedule-heading" class="rounded-3xl border border-verdant/10 bg-white p-6 shadow-md">
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+                <h2 id="schedule-heading" class="text-xl font-semibold text-charcoal">Detailed schedule</h2>
+                <p class="mt-1 text-sm text-charcoal/60">Tasks are ordered by planting date and include care reminders.</p>
+            </div>
+        </div>
+        <div class="mt-6 hidden overflow-hidden rounded-2xl border border-emerald-100/60 md:block">
+            <table class="min-w-full divide-y divide-emerald-100 text-left">
+                <thead class="bg-verdant/10 text-xs font-semibold uppercase tracking-wide text-verdant">
+                    <tr>
+                        <th scope="col" class="px-4 py-3">Crop</th>
+                        <th scope="col" class="px-4 py-3">Planting date</th>
+                        <th scope="col" class="px-4 py-3">Watering</th>
+                        <th scope="col" class="px-4 py-3">Weeding</th>
+                        <th scope="col" class="px-4 py-3">Harvest</th>
+                        <th scope="col" class="px-4 py-3">Weather note</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-emerald-50 bg-white/70">
+                    {% for s in schedule %}
+                        {% set entry = s %}
+                        {% set view_mode = 'table' %}
+                        {% include 'partials/_schedule_row.html' %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-6 grid gap-4 md:hidden">
+            {% for s in schedule %}
+                {% set entry = s %}
+                {% set view_mode = 'card' %}
+                {% include 'partials/_schedule_row.html' %}
+            {% endfor %}
+        </div>
+    </section>
+
+    {% if allow_save %}
+    <section class="flex flex-col gap-3 rounded-3xl border border-verdant/10 bg-white p-6 shadow-md sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h2 class="text-lg font-semibold text-charcoal">Save this schedule</h2>
+            <p class="mt-1 text-sm text-charcoal/60">Add a descriptive name and optionally favorite it for quick access later.</p>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row">
+            <button id="schedule-save" type="button" class="inline-flex items-center justify-center rounded-full bg-verdant px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-verdant/30 transition hover:-translate-y-0.5 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-verdant">Save schedule</button>
+            <button id="schedule-delete" type="button" data-destination="{{ url_for('home') }}" class="inline-flex items-center justify-center rounded-full border border-charcoal px-5 py-3 text-sm font-semibold text-charcoal transition hover:bg-charcoal hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-charcoal">Discard</button>
+        </div>
+        <form id="saveForm" method="POST" action="{{ url_for('save_schedule') }}" class="hidden">
+            <input type="hidden" name="name" id="scheduleName">
+            <input type="hidden" name="is_favorite" id="scheduleFavorite">
+            <textarea name="diagram" id="scheduleDiagram" class="hidden">{{ diagram }}</textarea>
+            <textarea name="schedule_json" id="scheduleJson" class="hidden">{{ schedule|tojson }}</textarea>
+        </form>
+    </section>
+    {% else %}
+    <div class="flex flex-wrap items-center justify-between gap-4 rounded-3xl border border-emerald-100 bg-white p-6 text-sm text-charcoal/70 shadow-sm">
+        <p>Schedules are automatically saved when you access them from your library.</p>
+        <a href="{{ url_for('saved_schedules') }}" class="inline-flex items-center justify-center rounded-full border border-verdant px-4 py-2 text-sm font-semibold text-verdant transition hover:bg-verdant/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-verdant">View saved schedules</a>
+    </div>
+    {% endif %}
+</section>
 {% endblock %}
-

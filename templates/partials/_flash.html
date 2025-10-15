@@ -1,0 +1,12 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="space-y-3">
+            {% for category, message in messages %}
+                <div class="flash-message {{ category|default('info') }}">
+                    <span>{{ message }}</span>
+                    <button type="button" class="flash-dismiss" aria-label="Dismiss message">&times;</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}

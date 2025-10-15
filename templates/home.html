@@ -1,57 +1,82 @@
-<!-- templates/home.html -->
 {% extends "layout.html" %}
 {% block title %}Home | Verdant{% endblock %}
 
-{% block body_class %}home-bg{% endblock %}
-
 {% block content %}
-<h2>Welcome to Verdant</h2>
-
-<p>
-  Verdant helps gardeners plan, plant, and harvest produce efficiently. Provide details
-  about your needs and garden and receive a personalized planting schedule.
-</p>
-<p>
-  Create an account, log in, and generate your own schedule based on your goals.
-</p>
-
-  <section class="slider">
-  <div class="slide">
-    <img src="{{ url_for('static', filename='crop.jpg') }}" alt="Healthy crops" />
-    <div class="caption">Plan your crops with precision</div>
-  </div>
-  <div class="slide">
-    <img src="{{ url_for('static', filename='aadi.jpg') }}" alt="Garden layout" />
-    <div class="caption">Visualize your garden layout</div>
-  </div>
-  <div class="slide">
-    <img src="{{ url_for('static', filename='3354504d-9c8d-4712-82d3-2d3b2811cc41.jpg') }}" alt="Harvest" />
-    <div class="caption">Track your harvest progress</div>
-  </div>
+<section class="grid gap-10 lg:grid-cols-[minmax(0,1fr),minmax(0,1fr)] lg:items-center">
+    <div class="space-y-6">
+        <span class="inline-flex items-center rounded-full bg-verdant/10 px-4 py-1 text-sm font-medium text-verdant">Smarter growing starts here</span>
+        <h1 class="text-4xl font-bold tracking-tight text-charcoal sm:text-5xl">Plan, plant, and harvest smarter.</h1>
+        <p class="max-w-xl text-lg text-charcoal/80">Verdant crafts adaptive planting schedules that align with your goals, garden size, and community needs so every seed thrives.</p>
+        <div class="flex flex-col gap-3 sm:flex-row">
+            <a href="{{ url_for('generate_schedule_view') }}" class="inline-flex items-center justify-center rounded-full bg-verdant px-6 py-3 text-base font-semibold text-white shadow-lg shadow-verdant/20 transition hover:-translate-y-0.5 hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-verdant">Generate a schedule</a>
+            <a href="{{ url_for('register') }}" class="inline-flex items-center justify-center rounded-full border border-verdant px-6 py-3 text-base font-semibold text-verdant transition hover:bg-verdant/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-verdant">Join Verdant</a>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2">
+            <div class="rounded-xl border border-verdant/10 bg-white/70 p-4 shadow-sm backdrop-blur">
+                <p class="text-sm font-semibold text-verdant">Tailored insights</p>
+                <p class="mt-1 text-sm text-charcoal/70">Personalize schedules with nutrition, yield, and climate data.</p>
+            </div>
+            <div class="rounded-xl border border-verdant/10 bg-white/70 p-4 shadow-sm backdrop-blur">
+                <p class="text-sm font-semibold text-verdant">Ready to act</p>
+                <p class="mt-1 text-sm text-charcoal/70">Share plans with your team and keep everyone synchronized.</p>
+            </div>
+        </div>
+    </div>
+    <div class="relative">
+        <div class="absolute -inset-6 rounded-3xl bg-gradient-to-br from-verdant/20 to-emerald-100 blur-2xl"></div>
+        <div class="relative overflow-hidden rounded-3xl border border-white/50 bg-white shadow-2xl" data-slider>
+            <div class="slider-track">
+                <div class="slider-panel">
+                    <img src="{{ url_for('static', filename='crop.jpg') }}" alt="Healthy crops ready for harvest" class="h-full w-full object-cover" />
+                    <div class="slider-caption">Plan your crops with precision</div>
+                </div>
+                <div class="slider-panel">
+                    <img src="{{ url_for('static', filename='aadi.jpg') }}" alt="Community garden aerial layout" class="h-full w-full object-cover" />
+                    <div class="slider-caption">Visualize your garden layout</div>
+                </div>
+                <div class="slider-panel">
+                    <img src="{{ url_for('static', filename='3354504d-9c8d-4712-82d3-2d3b2811cc41.jpg') }}" alt="Baskets of fresh produce" class="h-full w-full object-cover" />
+                    <div class="slider-caption">Track your harvest progress</div>
+                </div>
+            </div>
+            <div class="slider-dots" role="tablist" aria-label="Garden imagery">
+                <button type="button" class="slider-dot" aria-label="Slide 1" aria-controls="slide-1"></button>
+                <button type="button" class="slider-dot" aria-label="Slide 2" aria-controls="slide-2"></button>
+                <button type="button" class="slider-dot" aria-label="Slide 3" aria-controls="slide-3"></button>
+            </div>
+        </div>
+    </div>
 </section>
 
-<section class="features">
-    <div class="feature-card">
-    <h3>Smart Recommendations</h3>
-    <p>Get crop suggestions tailored to your space and nutritional goals.</p>
-  </div>
-    <div class="feature-card">
-<section class="features">
-  <div class="feature-card">
-    <h3>Smart Recommendations</h3>
-    <p>Get crop suggestions tailored to your space and nutritional goals.</p>
-  </div>
-  <div class="feature-card">
-    <h3>Save &
-      Share</h3>
-    <p>Store favorite schedules and revisit them whenever you need.</p>
-  </div>
-    <div class="feature-card">
+<section class="mt-16">
+    <h2 class="text-2xl font-semibold text-charcoal sm:text-3xl">Why growers choose Verdant</h2>
+    <p class="mt-2 max-w-2xl text-base text-charcoal/70">We translate complex data into friendly guidance so you can focus on nurturing your garden and community.</p>
+    <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <article class="feature-card">
+            <h3>Smart recommendations</h3>
+            <p>Receive crop suggestions aligned with your space, nutrition goals, and local climate insights.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Save &amp; share schedules</h3>
+            <p>Bookmark your favorite plans, collaborate with volunteers, and revisit past successes.</p>
+        </article>
+        <article class="feature-card">
+            <h3>Track every milestone</h3>
+            <p>Stay ahead with watering, weeding, and harvest reminders tailored to each crop.</p>
+        </article>
+    </div>
+</section>
 
-  <div class="feature-card">
-    <h3>Progress Tracking</h3>
-    <p>Monitor growth stages and keep your garden on schedule.</p>
-  </div>
+<section class="mt-20 rounded-3xl border border-verdant/10 bg-white p-8 shadow-xl">
+    <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+        <div>
+            <h2 class="text-2xl font-semibold text-charcoal">Ready to cultivate resilient harvests?</h2>
+            <p class="mt-2 max-w-2xl text-base text-charcoal/70">Log in to continue shaping your planting plans, or create an account to start from scratch.</p>
+        </div>
+        <div class="flex flex-wrap gap-3">
+            <a href="{{ url_for('login') }}" class="inline-flex items-center justify-center rounded-full bg-charcoal px-5 py-3 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-charcoal">Log in</a>
+            <a href="{{ url_for('generate_schedule_view') }}" class="inline-flex items-center justify-center rounded-full border border-charcoal px-5 py-3 text-sm font-semibold text-charcoal transition hover:bg-charcoal hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-charcoal">Create a schedule</a>
+        </div>
+    </div>
 </section>
 {% endblock %}
-
