@@ -1,83 +1,50 @@
-<!-- templates/layout.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Verdant{% endblock %}</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body class="{% block body_class %}{% endblock %}">
-
-  <!-- NAV BAR -->
-  <nav class="navbar">
-    <div class="nav-left">
-      <a href="{{ url_for('home') }}">
-        <img src="{{ url_for('static', filename='Screenshot_2025-01-03_at_7.28.24_PM-removebg-preview.png') }}" 
-             alt="Verdant Logo" class="logo" />
-      </a>
-      <h1 class="site-title">Verdant</h1>
-    </div>
-
-    <div class="nav-right">
-      <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Home</a>
-      <a href="{{ url_for('login') }}" class="{% if request.endpoint == 'login' %}active{% endif %}">Login</a>
-      <a href="{{ url_for('register') }}" class="{% if request.endpoint == 'register' %}active{% endif %}">Register</a>
-      <a href="{{ url_for('generate_schedule_view') }}" class="{% if request.endpoint == 'generate_schedule_view' %}active{% endif %}">Generate Schedule</a>
-      <a href="{{ url_for('saved_schedules') }}" class="{% if request.endpoint in ['saved_schedules', 'view_schedule'] %}active{% endif %}">Schedules</a>
-      <a href="{{ url_for('logout') }}" class="{% if request.endpoint == 'logout' %}active{% endif %}">Logout</a>
-    </div>
-  </nav>
-
-  <!-- HERO SECTION -->
-  {% block hero_section %}
-  <header class="hero-section">
-    <div class="hero-content">
-      <h2>Welcome to Verdant</h2>
-      <p>Plan your garden with tailored planting schedules.</p>
-      <a href="{{ url_for('generate_schedule_view') }}" class="cta-button">Generate a Schedule</a>
-    </div>
-  </header>
-  {% endblock %}
-
-  <!-- MAIN CONTENT -->
-  <main>
-    <div class="container">
-      {% block content %}
-      {% endblock %}
-    </div>
-  </main>
-
-  <button id="back-to-top" class="back-to-top" aria-label="Back to top">↑</button>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <p>© 2025 Verdant. All rights reserved.</p>
-  </footer>
-  <script>
-  const backBtn = document.getElementById('back-to-top');
-  window.addEventListener('scroll', () => {
-    backBtn.classList.toggle('show', window.scrollY > 300);
-  });
-  backBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-    const slides = document.querySelectorAll('.slide');
-    let currentSlide = 0;
-    function showSlide(index) {
-      slides.forEach((s, i) => {
-        s.classList.toggle('active', i === index);
-    });
-  }
-  if (slides.length) {
-    showSlide(currentSlide);
-    setInterval(() => {
-      currentSlide = (currentSlide + 1) % slides.length;
-      showSlide(currentSlide);
-    }, 5000);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Verdant{% endblock %}</title>
+    <meta name="description" content="Verdant helps you plan, plant, and harvest smarter with data-driven garden schedules." />
+    <meta property="og:title" content="Verdant" />
+    <meta property="og:description" content="Generate intelligent planting schedules tailored to your garden." />
+    <meta property="og:type" content="website" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        verdant: "#0E7C66",
+                        charcoal: "#1F2933",
+                        mist: "#F7F9F8"
+                    },
+                    fontFamily: {
+                        sans: ['"Inter"', '"Helvetica Neue"', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        };
     </script>
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-full bg-mist text-charcoal font-sans antialiased {% block body_class %}{% endblock %}">
+    <a href="#main-content" class="skip-link">Skip to content</a>
+    {% include 'partials/_navbar.html' %}
+    <div class="relative flex min-h-[calc(100vh-4rem)] flex-col">
+        <main id="main-content" class="flex-1">
+            {% include 'partials/_flash.html' %}
+            <div class="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        {% include 'partials/_footer.html' %}
+    </div>
+    <button id="back-to-top" class="fixed bottom-6 right-6 hidden rounded-full bg-verdant p-3 text-white shadow-lg transition hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-verdant" aria-label="Back to top">
+        <span aria-hidden="true">↑</span>
+    </button>
+    <script src="{{ url_for('static', filename='main.js') }}" defer></script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>
