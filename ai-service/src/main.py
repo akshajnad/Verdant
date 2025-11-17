@@ -44,25 +44,88 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize services
-db_client = DatabaseClient(
-    url=os.getenv("SUPABASE_URL"),
-    service_role_key=os.getenv("SUPABASE_SERVICE_ROLE_KEY")
-)
+# Check required environment variables
+REQUIRED_ENV_VARS = {
+    "SUPABASE_URL": os.getenv("SUPABASE_URL"),
+    "SUPABASE_SERVICE_ROLE_KEY": os.getenv("SUPABASE_SERVICE_ROLE_KEY"),
+    "ANTHROPIC_API_KEY": os.getenv("ANTHROPIC_API_KEY")
+}
 
-claude_service = ClaudeService(
-    api_key=os.getenv("ANTHROPIC_API_KEY")
-)
+missing_vars = [key for key, value in REQUIRED_ENV_VARS.items() if not value]
+
+# Initialize services (will be None if env vars missing)
+db_client = None
+claude_service = None
+
+if missing_vars:
+    logger.warning(f"Missing environment variables: {', '.join(missing_vars)}")
+    logger.warning("API endpoints will return errors until environment is configured")
+    logger.warning("See .env.example for required configuration")
+else:
+    # Initialize services
+    try:
+        db_client = DatabaseClient(
+            url=REQUIRED_ENV_VARS["SUPABASE_URL"],
+            service_role_key=REQUIRED_ENV_VARS["SUPABASE_SERVICE_ROLE_KEY"]
+        )
+        logger.info("Database client initialized")
+    except Exception as e:
+        logger.error(f"Failed to initialize database client: {e}")
+
+    try:
+        claude_service = ClaudeService(
+            api_key=REQUIRED_ENV_VARS["ANTHROPIC_API_KEY"]
+        )
+        logger.info("Claude service initialized")
+    except Exception as e:
+        logger.error(f"Failed to initialize Claude service: {e}")
 
 
 # =====================================================
-# HEALTH CHECK
+# ROOT & HEALTH CHECK
 # =====================================================
+
+@app.get("/")
+async def root():
+    """Root endpoint with API information."""
+    config_status = "configured" if not missing_vars else "missing configuration"
+
+    response = {
+        "service": "Verdant AI Service",
+        "version": "2.0.0",
+        "status": "running",
+        "configuration": config_status,
+        "endpoints": {
+            "docs": "/docs",
+            "health": "/health",
+            "generate_schedule": "POST /ai/generate_schedule",
+            "revise_schedule": "POST /ai/revise_schedule"
+        },
+        "message": "Welcome to Verdant AI! Visit /docs for interactive API documentation."
+    }
+
+    if missing_vars:
+        response["warning"] = f"Missing environment variables: {', '.join(missing_vars)}"
+        response["help"] = "Copy .env.example to .env and fill in your credentials"
+
+    return response
+
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "ok", "service": "verdant-ai"}
+    health = {
+        "status": "ok",
+        "service": "verdant-ai",
+        "database": "connected" if db_client else "not configured",
+        "ai": "connected" if claude_service else "not configured"
+    }
+
+    if missing_vars:
+        health["status"] = "degraded"
+        health["missing_config"] = missing_vars
+
+    return health
 
 
 # =====================================================
@@ -82,6 +145,13 @@ async def generate_schedule(request: GenerateScheduleRequest):
     5. Returns the schedule ID and task list
     """
     try:
+        # Check if services are initialized
+        if not db_client or not claude_service:
+            raise HTTPException(
+                status_code=503,
+                detail=f"Service not configured. Missing: {', '.join(missing_vars)}"
+            )
+
         logger.info(f"Generating schedule for user {request.user_id}, garden {request.garden_id}")
 
         # 1. Fetch user data
@@ -223,6 +293,13 @@ async def revise_schedule(request: ReviseFeedbackRequest):
     5. Returns summary of changes
     """
     try:
+        # Check if services are initialized
+        if not db_client or not claude_service:
+            raise HTTPException(
+                status_code=503,
+                detail=f"Service not configured. Missing: {', '.join(missing_vars)}"
+            )
+
         logger.info(f"Revising schedule {request.schedule_id} based on feedback")
 
         # 1. Fetch schedule
