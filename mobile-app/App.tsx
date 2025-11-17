@@ -2,13 +2,14 @@
  * Verdant v2 - Main Application Entry Point
  */
 import React, { useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useSession } from './src/hooks/useSession';
 import SignInScreen from './src/features/auth/SignInScreen';
 import GardenWizard from './src/features/garden/GardenWizard';
 import ScheduleScreen from './src/features/schedule/ScheduleScreen';
 import FeedbackSheet from './src/features/schedule/FeedbackSheet';
+import { StatusBar } from 'expo-status-bar';
 
 const queryClient = new QueryClient();
 
@@ -82,15 +83,13 @@ function AppContent() {
   // Default: show a placeholder (in full app, this would be the home/navigation screen)
   return (
     <View className="flex-1 items-center justify-center bg-white px-6">
-      <View className="text-center">
-        <View className="text-4xl mb-4">🌱</View>
-        <View className="text-2xl font-bold text-gray-900 mb-2">
-          Garden Created!
-        </View>
-        <View className="text-gray-600">
-          Next: Generate your first schedule
-        </View>
-      </View>
+      <Text className="text-6xl mb-4">🌱</Text>
+      <Text className="text-2xl font-bold text-gray-900 mb-2">
+        Garden Created!
+      </Text>
+      <Text className="text-gray-600">
+        Next: Generate your first schedule
+      </Text>
     </View>
   );
 }
@@ -99,6 +98,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AppContent />
+      <StatusBar style="auto" />
     </QueryClientProvider>
   );
 }
