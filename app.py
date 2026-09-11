@@ -2,11 +2,12 @@ import os
 import json
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import pandas as pd
 
 app = Flask(__name__)
-app.secret_key = os.getenv("verdant157", "override")
+app.secret_key = os.getenv("SECRET_KEY", "dev-only-insecure-secret-key")
 
 # ---- Database: prefer DATABASE_URL (e.g., Render Postgres), else local SQLite ----
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -23,16 +24,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 # Safer engine settings for SQLite under WSGI
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_pre_ping": True,
-    "connect_args": {"check_same_thread": False},  # allow use across threads
+    "connect_args": {"check_same_thread": False} if db_uri.startswith("sqlite") else {},
 }
-
-# -----------------------------
-# DATABASE CONFIG
-# -----------------------------
-basedir = os.path.abspath(os.path.dirname(__file__))
-db_path = os.path.join(basedir, "app.db")
-app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{db_path}"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
@@ -98,7 +91,7 @@ def is_logged_in():
 def current_user():
     if not is_logged_in():
         return None
-    return User.query.get(session["user_id"])
+    return db.session.get(User, session["user_id"])
 
 def requires_login(f):
     from functools import wraps
@@ -240,7 +233,7 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
         user = User.query.filter_by(username=username).first()
-        if user and user.password == password:
+        if user and check_password_hash(user.password, password):
             session["user_id"] = user.id
             return redirect(url_for("generate_schedule_view"))
         else:
@@ -250,10 +243,14 @@ def login():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
+        username = (request.form.get("username") or "").strip()
+        password = request.form.get("password") or ""
         phone_number = request.form.get("phone_number", "")
         org_email = request.form.get("org_email", "")
+
+        if not username or not password:
+            flash("Username and password are required.")
+            return redirect(url_for("register"))
 
         existing = User.query.filter_by(username=username).first()
         if existing:
@@ -262,7 +259,7 @@ def register():
 
         new_user = User(
             username=username,
-            password=password,
+            password=generate_password_hash(password),
             phone_number=phone_number,
             org_email=org_email
         )
