@@ -29,13 +29,6 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 
 db = SQLAlchemy(app)
 
-# Create tables at import time so Gunicorn workers have the schema
-with app.app_context():
-    try:
-        db.create_all()
-    except Exception as e:
-        app.logger.warning(f"DB init skipped/failed: {e}")
-
 # -----------------------------
 # MODELS
 # -----------------------------
@@ -77,10 +70,19 @@ class SavedSchedule(db.Model):
     diagram = db.Column(db.Text, default="")
     schedule_json = db.Column(db.Text, default="")
     user = db.relationship("User", backref=db.backref("saved_schedules", lazy=True))
+
 # -----------------------------
 # APP CONTEXT & DB CREATION
 # -----------------------------
-# This will create tables if they don't exist, each time the app starts.
+# Create tables at import time, after all models are defined, so Gunicorn
+# workers have the schema ready. Must happen after the model classes above
+# or db.create_all() sees no tables to create.
+with app.app_context():
+    try:
+        db.create_all()
+        print("Database tables ready.", flush=True)
+    except Exception as e:
+        print(f"DB init skipped/failed: {e}", flush=True)
 
 # -----------------------------
 # AUTH HELPERS
